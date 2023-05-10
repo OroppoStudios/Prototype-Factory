@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -184,7 +185,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-            DashCountdown();
+            //DashCountdown();
         }
 
         private void LateUpdate()
@@ -308,44 +309,44 @@ namespace StarterAssets
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-            if(!isDashing)
-            {
-                // move the player
+            //if(!isDashing)
+            //{
+            //    // move the player
                 _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-            }
-            if(_input.dash == true && canDash == true && BeginDashCooldown == false)
-            {
-                isDashing = true;
-                BeginDashCooldown = true;
-            }
-            if(isDashing == true)
-            {
-
-                Debug.Log("Player is Dashing");
-                canDash = false;
-                _input.dash = false;
-                float originalSpeed = _speed; 
-
-                _speed = _DashSpeed;
-                // move the player
-                _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-
-                // dash duration
-                if (_DashDurationDelta >= 0.0f)
-                {
-                    _DashDurationDelta -= Time.deltaTime;
-                }
-                else if(_DashDurationDelta <= 0.0f)
-                {
-                    _DashDurationDelta = dashDuration;
-                    _speed = originalSpeed;
-                    isDashing = false;
-                    //uncomment for "Boost state effects"
-                    //BoostState = true;
-                }
-            }
+            //}
+            //if(_input.dash == true && canDash == true && BeginDashCooldown == false)
+            //{
+            //    isDashing = true;
+            //    BeginDashCooldown = true;
+            //}
+            //if(isDashing == true)
+            //{
+            //
+            //    Debug.Log("Player is Dashing");
+            //    canDash = false;
+            //    _input.dash = false;
+            //    float originalSpeed = _speed; 
+            //
+            //    _speed = _DashSpeed;
+            //    // move the player
+            //    _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+            //                     new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            //
+            //    // dash duration
+            //    if (_DashDurationDelta >= 0.0f)
+            //    {
+            //        _DashDurationDelta -= Time.deltaTime;
+            //    }
+            //    else if(_DashDurationDelta <= 0.0f)
+            //    {
+            //        _DashDurationDelta = dashDuration;
+            //        _speed = originalSpeed;
+            //        isDashing = false;
+            //        //uncomment for "Boost state effects"
+            //        //BoostState = true;
+            //    }
+            //}
 
 
             // update animator if using character
@@ -354,6 +355,7 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+            
         }
 
         private void JumpAndGravity()
@@ -425,24 +427,24 @@ namespace StarterAssets
             }
         }
 
-        private void DashCountdown()
-        {
-            if (BeginDashCooldown == true)
-            {
-                _input.dash = false;
-                //Dash Cooldown 
-                if (_DashTimeoutDelta >= 0.0f)
-                {
-                    _DashTimeoutDelta -= Time.deltaTime;
-                }
-                else if (_DashTimeoutDelta <= 0.0f)
-                {
-                    canDash = true;
-                    BeginDashCooldown = false;
-                    _DashTimeoutDelta = DashCooldown;
-                }
-            }
-        }
+        //private void DashCountdown()
+        //{
+        //    if (BeginDashCooldown == true)
+        //    {
+        //        _input.dash = false;
+        //        //Dash Cooldown 
+        //        if (_DashTimeoutDelta >= 0.0f)
+        //        {
+        //            _DashTimeoutDelta -= Time.deltaTime;
+        //        }
+        //        else if (_DashTimeoutDelta <= 0.0f)
+        //        {
+        //            canDash = true;
+        //            BeginDashCooldown = false;
+        //            _DashTimeoutDelta = DashCooldown;
+        //        }
+        //    }
+        //}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {

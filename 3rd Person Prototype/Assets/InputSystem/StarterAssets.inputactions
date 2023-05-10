@@ -43,9 +43,9 @@
                 },
                 {
                     "name": "Dash",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "aca9c84e-f636-4564-b59f-76f63329e278",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
