@@ -185,7 +185,6 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-            //DashCountdown();
         }
 
         private void LateUpdate()

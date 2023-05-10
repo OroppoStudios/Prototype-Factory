@@ -15,8 +15,24 @@ public class NewDash : MonoBehaviour
     
     [Header("Dashing")]
     public float dashForce;
-    public float dashUpwardForce;
+    //public float dashUpwardForce;
     public float dashDuration;
+    public float DashCooldown;
+    public float BoostWindow;
+
+    private float _verticalVelocity;
+    private Vector3 _verticalVec3;
+    private float _dashCooldownDelta;
+    private float _boostWindowDelta;
+    private bool canDash = true;
+    private bool windowOpen = false;
+
+    [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
+    public float Gravity = -15.0f;
+
+    [Tooltip("The height the player can jump")]
+    public float DashHeight = 1.2f;
+
     //Start is called before the first frame update
 
     private PlayerInput _PInput;
@@ -37,20 +53,42 @@ public class NewDash : MonoBehaviour
 
         _input = GetComponent<StarterAssetsInputs>();
         _PInput = GetComponent<PlayerInput>();
+
+        _verticalVec3.x = 0.0f;
+        _verticalVec3.y = 0.0f;
+        _verticalVec3.z = 0.0f;
     }
 
     void Update()
     {
-        //(Mouse.current.rightButton.wasPressedThisFrame == true);
+        //Cooldown Timer
+        if (_dashCooldownDelta >= 0.0f && canDash == false)
+        {
+            _dashCooldownDelta -= Time.deltaTime;
+        }
+        else if (_dashCooldownDelta <= 0.0f)
+        {
+            _dashCooldownDelta = DashCooldown;
+            canDash = true;
+        }
 
-        if (impact.magnitude > magnitudeCheck) cc.Move(impact * Time.deltaTime);
+        BoostWindowTimer();
+
+        if (impact.magnitude > magnitudeCheck)
+        {
+            cc.Move((impact * Time.deltaTime) + _verticalVec3 * Time.deltaTime);
+            //cc.Move((impact * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            //cc.Move(impact * Time.deltaTime);
+        }
         // consumes the impact energy each cycle:
         impact = Vector3.Lerp(impact, Vector3.zero, 10 * Time.deltaTime);
+        _verticalVec3 = Vector3.Lerp(_verticalVec3, Vector3.zero, 10 * Time.deltaTime);
 
-        if (Mouse.current.rightButton.wasPressedThisFrame == true)
+        if (Mouse.current.rightButton.wasPressedThisFrame == true && canDash == true)
         {
-            Debug.Log("Player should dash now");
+            //Debug.Log("Player should dash now");
             AddImpact(orientation.forward, dashForce);
+            canDash = false;
         }
     }
 
@@ -59,5 +97,40 @@ public class NewDash : MonoBehaviour
         dir.Normalize();
         if (dir.y < 0) dir.y = -dir.y; // reflect down force on the ground
         impact += dir.normalized * force / mass;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "BasicEnemy")
+        {
+            Debug.Log("Enemy has entered the trigger");
+            other.gameObject.SetActive(false);
+            windowOpen = true;
+        }
+    }
+
+    private void BoostWindowTimer()
+    {
+        //Input Window Timer
+        if (_boostWindowDelta >= 0.0f && windowOpen == true)
+        {
+            _boostWindowDelta -= Time.deltaTime;
+
+            //Still need to stop player from pressing ctrl multiple times during boost window ************************************************
+            //can probably be fixed by a bool in the if statement
+            if(Keyboard.current.ctrlKey.wasPressedThisFrame == true)
+            {
+                Debug.Log("Key was pressed during boost window");
+                // the square root of H * -2 * G = how much velocity needed to reach desired height
+                _verticalVelocity = Mathf.Sqrt(DashHeight * -2f * Gravity);
+                _verticalVec3.y = _verticalVelocity;
+                AddImpact(orientation.forward, dashForce);
+            }
+        }
+        else if (_boostWindowDelta <= 0.0f)
+        {
+            _boostWindowDelta = BoostWindow;
+            windowOpen = false;
+        }
     }
 }
