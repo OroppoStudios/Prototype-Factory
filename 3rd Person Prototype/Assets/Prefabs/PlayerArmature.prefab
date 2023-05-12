@@ -1071,6 +1071,7 @@ GameObject:
   - component: {fileID: 1762682266}
   - component: {fileID: 1762682272}
   - component: {fileID: 1762682267}
+  - component: {fileID: 1762682269}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1368,8 +1369,23 @@ MonoBehaviour:
   DashCooldown: 3
   BoostWindow: 3
   Gravity: -15
-  DashHeight: 20
+  DashHeight: 150
   magnitudeCheck: 10
+--- !u!114 &1762682269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47e96098553a3f64ea7ea02a4063a045, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forwardSpeed: 25
+  strafeSpeed: 7.5
+  hoverSpeed: 5
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
