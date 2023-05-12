@@ -31,11 +31,16 @@ public class FlyingMode : MonoBehaviour
        // StartFlying();
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnMove(InputAction.CallbackContext context)
     {
-        activeForwardSpeed = Input.GetAxisRaw("Vertical") * forwardSpeed;
-        activeStrafeSpeed = Input.GetAxisRaw("Horizontal") * strafeSpeed;
+        Vector2 MoveAxis = context.ReadValue<Vector2>();
+
+        if (MoveAxis.sqrMagnitude < 0.01f)
+        {
+            activeForwardSpeed = MoveAxis.y * forwardSpeed;
+            activeStrafeSpeed = MoveAxis.x * strafeSpeed;
+        }
+           
     }
 
     public void StartFlying()
