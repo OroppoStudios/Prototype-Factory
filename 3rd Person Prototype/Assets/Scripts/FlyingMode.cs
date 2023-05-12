@@ -31,7 +31,7 @@ public class FlyingMode : MonoBehaviour
        // StartFlying();
     }
 
-    void OnMove(InputAction.CallbackContext context)
+    public void OnMove(InputAction.CallbackContext context)
     {
         Vector2 MoveAxis = context.ReadValue<Vector2>();
 
