@@ -10,6 +10,7 @@ public class FlyingMode : MonoBehaviour
     private NewDash DashScript;
     private ThirdPersonController TPC;
     private CharacterController CC;
+    private Rigidbody rb;
 
     private PlayerInput _PInput;
     private StarterAssetsInputs _input;
@@ -26,6 +27,8 @@ public class FlyingMode : MonoBehaviour
         DashScript = GetComponent<NewDash>();
         TPC = GetComponent<ThirdPersonController>();
         CC = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        
 
         _input = GetComponent<StarterAssetsInputs>();
         _PInput = GetComponent<PlayerInput>();
@@ -51,6 +54,11 @@ public class FlyingMode : MonoBehaviour
         {
             Debug.Log("Player has entered flying state");
         }
+    }
+
+    private void Flying()
+    {
+        
     }
 
 

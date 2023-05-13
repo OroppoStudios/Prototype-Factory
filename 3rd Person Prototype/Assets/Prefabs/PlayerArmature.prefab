@@ -1072,6 +1072,7 @@ GameObject:
   - component: {fileID: 1762682272}
   - component: {fileID: 1762682267}
   - component: {fileID: 1762682269}
+  - component: {fileID: 1762682262}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1368,6 +1369,7 @@ MonoBehaviour:
   dashDuration: 0.25
   DashCooldown: 3
   BoostWindow: 3
+  FlyWindow: 1
   Gravity: -15
   DashHeight: 150
   magnitudeCheck: 10
@@ -1386,6 +1388,22 @@ MonoBehaviour:
   forwardSpeed: 25
   strafeSpeed: 7.5
   hoverSpeed: 5
+  FlyingModeState: 0
+--- !u!114 &1762682262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ec7d176af17794791f287482c9cc62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 500
+  Invulnerable: 0
+  fadeInTime: 0.5
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
