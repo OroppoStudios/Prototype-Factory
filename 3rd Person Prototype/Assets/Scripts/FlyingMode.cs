@@ -18,6 +18,8 @@ public class FlyingMode : MonoBehaviour
     public float forwardSpeed = 25f, strafeSpeed = 7.5f, hoverSpeed = 5.0f;
     private float activeForwardSpeed, activeStrafeSpeed, activeHoverSpeed;
 
+    public bool FlyingModeState = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,17 +33,27 @@ public class FlyingMode : MonoBehaviour
        // StartFlying();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        Vector2 MoveAxis = context.ReadValue<Vector2>();
+    //public void OnMove(InputAction.CallbackContext context)
+    //{
+    //    Vector2 MoveAxis = context.ReadValue<Vector2>();
+    //
+    //    if (MoveAxis.sqrMagnitude < 0.01f)
+    //    {
+    //        activeForwardSpeed = MoveAxis.y * forwardSpeed;
+    //        activeStrafeSpeed = MoveAxis.x * strafeSpeed;
+    //    }
+    //       
+    //}
 
-        if (MoveAxis.sqrMagnitude < 0.01f)
+    private void Update()
+    {
+        if(FlyingModeState == true)
         {
-            activeForwardSpeed = MoveAxis.y * forwardSpeed;
-            activeStrafeSpeed = MoveAxis.x * strafeSpeed;
+            Debug.Log("Player has entered flying state");
         }
-           
     }
+
+
 
     public void StartFlying()
     {
@@ -49,5 +61,27 @@ public class FlyingMode : MonoBehaviour
         DashScript.enabled = false;
         TPC.enabled = false;
         CC.enabled = false;
+        FlyingModeState = true;
     }
+
+    public void DisableFlying()
+    {
+        //enable Other movement based scripts
+        DashScript.enabled = true;
+        TPC.enabled = true;
+        CC.enabled = true;
+        FlyingModeState = false;
+    }
+
+    //Flying Mode State Get & Set
+    public void SetFlyingMode(bool Toggle)
+    {
+        FlyingModeState = Toggle;
+    }
+
+    public bool GetFlyingMode()
+    {
+        return FlyingModeState;
+    }
+
 }

@@ -12,6 +12,7 @@ public class NewDash : MonoBehaviour
     private Rigidbody rb;
     private ThirdPersonController TPC;
     private CharacterController cc;
+    private FlyingMode FlyMode;
     
     [Header("Dashing")]
     public float dashForce;
@@ -19,13 +20,16 @@ public class NewDash : MonoBehaviour
     public float dashDuration;
     public float DashCooldown;
     public float BoostWindow;
+    public float FlyWindow;
 
     private float _verticalVelocity;
     private Vector3 _verticalVec3;
     private float _dashCooldownDelta;
     private float _boostWindowDelta;
+    private float _flyWindowDelta;
     private bool canDash = true;
     private bool windowOpen = false;
+    private bool flyWindowOpen = false;
 
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     public float Gravity = -15.0f;
@@ -47,6 +51,7 @@ public class NewDash : MonoBehaviour
         rb = GetComponent<Rigidbody>(); // Get the rigid body component
         cc = GetComponent<CharacterController>(); // Get the character controller component
         TPC = GetComponent<ThirdPersonController>();
+        FlyMode = GetComponent<FlyingMode>();
 
         dashDuration = 0f; // Initialize the dash timer to zero
         //cooldownTimer = 0f; // Initialize the cooldown timer to zero
@@ -73,6 +78,7 @@ public class NewDash : MonoBehaviour
         }
 
         BoostWindowTimer();
+        FlyWindowTimer();
 
         if (impact.magnitude > magnitudeCheck)
         {
@@ -125,12 +131,36 @@ public class NewDash : MonoBehaviour
                 _verticalVelocity = Mathf.Sqrt(DashHeight * -2f * Gravity);
                 _verticalVec3.y = _verticalVelocity;
                 AddImpact(orientation.forward, dashForce);
+                flyWindowOpen = true;
             }
         }
         else if (_boostWindowDelta <= 0.0f)
         {
             _boostWindowDelta = BoostWindow;
             windowOpen = false;
+        }
+    }
+
+
+    private void FlyWindowTimer()
+    {
+        //Input Window Timer
+        if (_flyWindowDelta >= 0.0f && flyWindowOpen == true)
+        {
+            _flyWindowDelta -= Time.deltaTime;
+
+            //Still need to stop player from pressing ctrl multiple times during boost window ************************************************
+            //can probably be fixed by a bool in the if statement
+            if (Keyboard.current.eKey.wasPressedThisFrame == true)
+            {
+                Debug.Log("Key was pressed during Fly window");
+                FlyMode.StartFlying();
+            }
+        }
+        else if (_flyWindowDelta <= 0.0f)
+        {
+            _flyWindowDelta = FlyWindow;
+            flyWindowOpen = false;
         }
     }
 }
