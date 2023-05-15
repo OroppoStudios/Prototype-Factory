@@ -31,6 +31,37 @@ Transform:
   m_Father: {fileID: 3893294197879345259}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1728651955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1728651956}
+  m_Layer: 0
+  m_Name: ShipLookTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1728651956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728651955}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.42, z: -4.34}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 543450653685436062}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &122036865199361367
 GameObject:
   m_ObjectHideFlags: 0
@@ -1220,6 +1251,11 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   dash: 0
+  thrust1D: 0
+  upDown1D: 0
+  strafe1D: 0
+  roll1D: 0
+  pitchYaw: {x: 0, y: 0}
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -1253,7 +1289,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4416926081852918490}
         m_TargetAssemblyTypeName: 
-        m_MethodName: InputMove
+        m_MethodName: 
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1315,10 +1351,42 @@ MonoBehaviour:
     m_ActionName: Player/Sprint[/Keyboard/leftShift,/XInputControllerWindows/leftTrigger]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e4ce1614-c754-48c1-9103-33130441661f
-    m_ActionName: UI/New action
+    m_ActionId: aca9c84e-f636-4564-b59f-76f63329e278
+    m_ActionName: Player/Dash[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1762682269}
+        m_TargetAssemblyTypeName: FlyingMode, Assembly-CSharp
+        m_MethodName: OnThrust
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 64b1dc9d-b9b2-4d78-8c83-0f00a6d36aec
+    m_ActionName: Player Flying Mode/Thrust[/Keyboard/s,/Keyboard/w]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9c55d1ec-2d0b-40a4-b361-b1fa13ff51c4
+    m_ActionName: Player Flying Mode/Strafe[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a5333f85-3fa5-4212-873b-05c55ca20b7c
+    m_ActionName: Player Flying Mode/UpDown[/Keyboard/c,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 31fa9db6-05ec-46dd-a754-c8e8e6f93518
+    m_ActionName: Player Flying Mode/Roll[/Keyboard/q,/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8fb931e8-d72a-4c6f-bc02-7d52ed6e9447
+    m_ActionName: Player Flying Mode/PitchYaw[/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: KeyboardMouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -1332,10 +1400,10 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.5
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!136 &1762682272
@@ -1385,9 +1453,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e96098553a3f64ea7ea02a4063a045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerCharacter: {fileID: 3837663348675104489}
+  PlayerPlane: {fileID: 919132149212222500}
   forwardSpeed: 25
   strafeSpeed: 7.5
   hoverSpeed: 5
+  yawTorque: 100
+  pitchTorque: 100
+  rollTorque: 100
+  thrust: 100
+  upThrust: 50
+  strafeThrust: 50
+  thrustGlideReduction: 0.5
+  upDownGlideReduction: 0.111
+  leftRightGlideReduction: 0.111
+  FlyDuration: 3
   FlyingModeState: 0
 --- !u!114 &1762682262
 MonoBehaviour:
@@ -2964,6 +3044,12 @@ PrefabInstance:
 --- !u!4 &543450653685436062 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fb07540b24f2fb144933284bf146140c,
+    type: 3}
+  m_PrefabInstance: {fileID: 56797557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &919132149212222500 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fb07540b24f2fb144933284bf146140c,
     type: 3}
   m_PrefabInstance: {fileID: 56797557}
   m_PrefabAsset: {fileID: 0}

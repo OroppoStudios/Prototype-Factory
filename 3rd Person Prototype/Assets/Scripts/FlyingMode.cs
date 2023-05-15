@@ -51,6 +51,9 @@ public class FlyingMode : MonoBehaviour
     private float leftRightGlideReduction = 0.111f;
     private float glide, verticalGlide, horizontalGlide = 0f;
 
+    public float FlyDuration = 3.0f;
+    private float _flyDurationDelta; 
+
 
 
     public bool FlyingModeState = false;
@@ -67,23 +70,11 @@ public class FlyingMode : MonoBehaviour
 
         _input = GetComponent<StarterAssetsInputs>();
         _PInput = GetComponent<PlayerInput>();
+
+        _flyDurationDelta = FlyDuration;
         
         PlayerPlane.SetActive(false);
-
-       // StartFlying();
     }
-
-    //public void OnMove(InputAction.CallbackContext context)
-    //{
-    //    Vector2 MoveAxis = context.ReadValue<Vector2>();
-    //
-    //    if (MoveAxis.sqrMagnitude < 0.01f)
-    //    {
-    //        activeForwardSpeed = MoveAxis.y * forwardSpeed;
-    //        activeStrafeSpeed = MoveAxis.x * strafeSpeed;
-    //    }
-    //       
-    //}
 
     void FixedUpdate()
     {
@@ -92,7 +83,8 @@ public class FlyingMode : MonoBehaviour
            // Debug.Log("Player has entered flying state");
             Flying();
         }
-
+        //Monitors flying duration and disables it
+        FlyWindowTimer();
 
     }
 
@@ -155,7 +147,6 @@ public class FlyingMode : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         PlayerCharacter.SetActive(false);
         PlayerPlane.SetActive(true);
-
         if(FlyingActionMapEnabled == false)
         {
             _PInput.SwitchCurrentActionMap("Player Flying Mode");
@@ -173,7 +164,7 @@ public class FlyingMode : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         PlayerCharacter.SetActive(true);
         PlayerPlane.SetActive(false);
-
+        ResetForces();
         if (FlyingActionMapEnabled == true)
         {
             _PInput.SwitchCurrentActionMap("Player");
@@ -193,5 +184,29 @@ public class FlyingMode : MonoBehaviour
         return FlyingModeState;
     }
 
+
+    private void FlyWindowTimer()
+    {
+        //Input Window Timer
+        if (_flyDurationDelta >= 0.0f && FlyingModeState == true)
+        {
+            _flyDurationDelta -= Time.deltaTime;
+        }
+        else if (_flyDurationDelta <= 0.0f)
+        {
+            _flyDurationDelta = FlyDuration;
+            DisableFlying();
+        }
+    }
+    private void ResetForces()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        _input.roll1D = 0f;
+        _input.strafe1D = 0f;
+        _input.thrust1D = 0f;
+        _input.upDown1D = 0f;
+        _input.pitchYaw = Vector2.zero;
+    }
 
 }
