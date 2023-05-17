@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Toggle",
+                    "type": "Button",
+                    "id": "625df690-d34e-4f3f-8f30-8f46cab18a43",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Look",
                     "type": "Value",
                     "id": "2690c379-f54d-45be-a724-414123833eb4",
@@ -153,17 +162,6 @@
                 },
                 {
                     "name": "",
-                    "id": "e2f9aa65-db06-4c5b-a2e9-41bc8acb9517",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "StickDeadzone",
-                    "groups": "Gamepad",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ed66cbff-2900-4a62-8896-696503cfcd31",
                     "path": "<Pointer>/delta",
                     "interactions": "",
@@ -236,6 +234,17 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73ee3a68-e1e9-4b3e-86b2-b5ae5dd6ae18",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Toggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
