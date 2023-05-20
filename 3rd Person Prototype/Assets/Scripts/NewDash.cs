@@ -30,6 +30,7 @@ public class NewDash : MonoBehaviour
     private bool canDash = true;
     private bool windowOpen = false;
     private bool flyWindowOpen = false;
+    private bool isDashing = false;
 
     [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     public float Gravity = -15.0f;

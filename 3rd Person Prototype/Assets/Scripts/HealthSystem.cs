@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class HealthSystem : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 500;
+    [SerializeField] private int maxHealth = 5;
 
     private int _currentHealth;
     public int currentHealth
@@ -26,15 +26,17 @@ public class HealthSystem : MonoBehaviour
     public event Action<float> OnHealthPercentChanged = delegate { };
     public event Action<int> OnTakeDamage = delegate { };
     public event Action<GameObject> OnObjectDeath = delegate { };
+
     [Header("Low Health Vignette")]
     static public VolumeProfile volumeProfile;
     UnityEngine.Rendering.Universal.Vignette vignette;
+
     public float fadeInTime = 0.5f;
 
     private void Update()
     {
         if (Keyboard.current.qKey.wasPressedThisFrame)
-            ModifyHealth(transform, -100);
+            ModifyHealth(-1);
     }
 
     private void OnEnable()
@@ -65,21 +67,10 @@ public class HealthSystem : MonoBehaviour
         currentHealth = foo;
     }
 
-
-    private int HandleDamageModifiers(Transform requester, int amount)
-    {
-        Debug.LogWarning("No Damage Modifiers Implemented");
-        return amount;
-
-    }
-
-    public void ModifyHealth(Transform requester, int amount)
+    public void ModifyHealth(int amount)
     {
         if (Invulnerable == false && currentHealth >= 0)
         {
-            if (requester != null)
-                amount = HandleDamageModifiers(requester, amount);
-
             if (transform.tag == "Player")
             {
                 currentHealth += amount;
