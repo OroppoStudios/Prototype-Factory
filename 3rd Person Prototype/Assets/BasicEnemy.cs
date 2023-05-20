@@ -46,10 +46,8 @@ public class BasicEnemy : MonoBehaviour
     }
     private void AttackPlayer(GameObject Target)
     {
-        Debug.Log("Attack Called");
         if (!canAttack)
             return;
-        Debug.Log("Attack Started");
 
         transform.LookAt(Target.transform);
         Rigidbody rb = Instantiate(bulletPrefab, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
