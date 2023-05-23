@@ -2119,8 +2119,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e436fd6b77af8464fa2a2aba11250f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 15
+  BaseSpeed: 15
+  GrappleSpeed: 30
+  DashSpeed: 100
+  FlyingSpeed: 200
+  DashTime: 0.073
+  FlyTime: 15
+  FlyChargeWindow: 1
+  JumpHeight: 15
   InAir: 0
+  FlyCharged: 0
+  GroundMode: 1
   RB: {fileID: 0}
 --- !u!4 &1198574576 stripped
 Transform:

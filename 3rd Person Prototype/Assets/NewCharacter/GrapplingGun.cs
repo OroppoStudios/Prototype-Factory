@@ -88,13 +88,15 @@ public class GrapplingGun : MonoBehaviour
             grapplePoint = hit.point;
             lr.positionCount = 2;
             currentGrapplePosition = gunTip.position;
-            player.GetComponent<CharacterMovement>().RB.velocity=(grapplePoint - player.position).normalized* player.GetComponent<CharacterMovement>().Speed;
+            player.GetComponent<CharacterMovement>().RB.useGravity = false;
+         player.GetComponent<CharacterMovement>().RB.velocity=(grapplePoint - player.position).normalized* player.GetComponent<CharacterMovement>().GrappleSpeed;
         }
     }
     private void StopPullGrapple()
     {
         lr.positionCount = 0;
         Pulling = false;
+        player.GetComponent<CharacterMovement>().RB.useGravity = true;
         player.GetComponent<CharacterMovement>().InAir = false;
     }
     private Vector3 currentGrapplePosition;
