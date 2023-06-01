@@ -2120,11 +2120,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseSpeed: 15
-  GrappleSpeed: 30
+  GrappleSpeed: 50
   DashSpeed: 100
-  FlyingSpeed: 200
+  FlyingSpeed: 50
   DashTime: 0.073
-  FlyTime: 15
+  FlyTime: 5
   FlyChargeWindow: 1
   JumpHeight: 15
   InAir: 0

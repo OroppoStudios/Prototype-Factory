@@ -6,17 +6,21 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
+    [Header("Player Speeds" + "\n")]
     [Range(0, 50)] public float BaseSpeed = 15;
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
-    [Range(100, 300)] public float FlyingSpeed = 200;
-
+    [Range(0, 100)] public float FlyingSpeed = 50;
+    [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
-    [Range(0, 30)] public float FlyTime = 15;
+    [Range(0, 15)] public float FlyTime = 5;
     [Range(0, 2.5f)] public float FlyChargeWindow =1f;
+    [Header("Player Other"+"\n")]
+    [Range(0, 25)] public float JumpHeight = 15;
+
     private float CurrentTopSpeed = 1;
     private WaitForSeconds DashTimer,FlyWindow;
-    [Range(0, 25)] public float JumpHeight = 15;
+
     [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true;
     [HideInInspector] public Rigidbody RB;
     private void Awake()
@@ -29,18 +33,25 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InAir)
-            return;
+       //if (InAir)
+       //    return;
 
-        if (GroundMode)
+        if (GroundMode&&!InAir)
             DoGroundMode();
-        else DoFlyMode();
+        else if(!GroundMode) DoFlyMode();
 
         
     }
     private void DoFlyMode()
     {
-        Invoke(nameof(FlyModeOver), FlyTime);
+        CurrentTopSpeed = FlyingSpeed;
+        RB.velocity += transform.GetChild(0).rotation* Vector3.forward;
+        if (RB.velocity.magnitude > CurrentTopSpeed)
+            RB.velocity = RB.velocity.normalized * CurrentTopSpeed;
+
+ 
+     
+            Invoke(nameof(FlyModeOver), FlyTime);
     }
     private void DoGroundMode()
     {
@@ -90,7 +101,7 @@ public class CharacterMovement : MonoBehaviour
         //uncomment the commented parts if you want UD vel to be unaffected by gravity
       //  float Yspeed = RB.velocity.y;
         RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
-     //   RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+        //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         yield return DashTimer;
         CurrentTopSpeed = BaseSpeed;
     }
@@ -102,6 +113,7 @@ public class CharacterMovement : MonoBehaviour
     }
     private void FlyModeOver()
     {
+        CurrentTopSpeed = BaseSpeed;
         GroundMode = true;
     }
     private void OnCollisionEnter(Collision collision)
