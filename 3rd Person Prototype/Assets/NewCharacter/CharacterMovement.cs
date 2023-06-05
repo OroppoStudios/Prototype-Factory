@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -23,12 +24,18 @@ public class CharacterMovement : MonoBehaviour
 
     [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true;
     [HideInInspector] public Rigidbody RB;
+    public GameObject PlaneModel;
+    private MeshRenderer meshRenderer;
+
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
         CurrentTopSpeed = BaseSpeed;
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.enabled = true;
+        PlaneModel.gameObject.SetActive(false);
     }
     // Update is called once per frame
     void Update()
@@ -44,18 +51,25 @@ public class CharacterMovement : MonoBehaviour
     }
     private void DoFlyMode()
     {
+        //enable plane model, disable player model
+        meshRenderer.enabled = false;
+        PlaneModel.gameObject.SetActive(true);
+
         CurrentTopSpeed = FlyingSpeed;
         RB.velocity += transform.GetChild(0).rotation* Vector3.forward;
         if (RB.velocity.magnitude > CurrentTopSpeed)
             RB.velocity = RB.velocity.normalized * CurrentTopSpeed;
 
- 
-     
+
             Invoke(nameof(FlyModeOver), FlyTime);
     }
     private void DoGroundMode()
     {
-          //basic Inputs
+        //disable plane model, enable player model
+        meshRenderer.enabled = true;
+        PlaneModel.gameObject.SetActive(false);
+
+        //basic Inputs
         Vector3 Vec = Vector3.zero + Physics.gravity*Time.deltaTime;
         Vec += transform.rotation * Vector3.right  * Input.GetAxisRaw("Horizontal");
         Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
