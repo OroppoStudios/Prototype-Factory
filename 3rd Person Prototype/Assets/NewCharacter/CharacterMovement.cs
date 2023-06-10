@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-
+using System;
 [RequireComponent(typeof(Rigidbody))]
 
 public class CharacterMovement : MonoBehaviour
@@ -13,21 +13,30 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
+
     [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
     [Range(0, 15)] public float FlyTime = 5;
     [Range(0, 2.5f)] public float FlyChargeWindow =1f;
-    [Header("Player Other"+"\n")]
+    [Range(0, 15)] public float DashResetTime = 5;
+    [Header("Jump Specifics" + "\n")]
     [Range(0, 25)] public float JumpHeight = 15;
+    [Range(0, 2)] public float DistToGround = 1;
+    public LayerMask WhatIsGround;
 
+    [Header("Player Other" + "\n")]
     private float CurrentTopSpeed = 1;
     private WaitForSeconds DashTimer,FlyWindow;
 
-    [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true,Dashing=false;
+    [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true,Dashing=false,CanDash=true;
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
     private MeshRenderer meshRenderer;
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * DistToGround);
+    }
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
@@ -68,11 +77,10 @@ public class CharacterMovement : MonoBehaviour
     private void DoGroundMode()
     {
         //disable plane model, enable player model
-        
-      
+
 
         //basic Inputs
-        Vector3 Vec = Vector3.zero + Physics.gravity*Time.deltaTime;
+        Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
         Vec += transform.rotation * Vector3.right  * Input.GetAxisRaw("Horizontal");
         Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
         float Yspeed = RB.velocity.y;
@@ -100,20 +108,27 @@ public class CharacterMovement : MonoBehaviour
         //jump
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RB.velocity += JumpHeight * Vector3.up;
+            RB.velocity += JumpHeight * Vector3.up* Convert.ToInt32(GetIfGrounded());
         }
 
         //dash
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift)&& CanDash)
             StartCoroutine(Dash());
 
         if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
             GroundMode = false;
     }
+    public bool GetIfGrounded()
+    {      
+         return Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround);     
+    }
+
     private IEnumerator Dash()
     {
         CurrentTopSpeed = DashSpeed;
         Dashing = true;
+        CanDash = false;
+        Invoke(nameof(ResetDash), DashResetTime);
         //uncomment the commented parts if you want UD vel to be unaffected by gravity
         //float Yspeed = RB.velocity.y;
         RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
@@ -121,6 +136,10 @@ public class CharacterMovement : MonoBehaviour
         yield return DashTimer;
         CurrentTopSpeed = BaseSpeed;
         Dashing = false;
+    }
+    internal void ResetDash()
+    {
+        CanDash = true;
     }
     private IEnumerator FlyCharge()
     {
