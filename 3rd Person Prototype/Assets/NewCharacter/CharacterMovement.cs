@@ -9,6 +9,7 @@ public class CharacterMovement : MonoBehaviour
 {
     [Header("Player Speeds" + "\n")]
     [Range(0, 50)] public float BaseSpeed = 15;
+    [Range(0, 1)] public float BaseAcceleration = 1;
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
@@ -22,7 +23,7 @@ public class CharacterMovement : MonoBehaviour
     private float CurrentTopSpeed = 1;
     private WaitForSeconds DashTimer,FlyWindow;
 
-    [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true;
+    [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true,Dashing=false;
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
     private MeshRenderer meshRenderer;
@@ -54,20 +55,21 @@ public class CharacterMovement : MonoBehaviour
         //enable plane model, disable player model
         meshRenderer.enabled = false;
         PlaneModel.gameObject.SetActive(true);
-
+        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x,0,0);
         CurrentTopSpeed = FlyingSpeed;
         RB.velocity += transform.GetChild(0).rotation* Vector3.forward;
+
         if (RB.velocity.magnitude > CurrentTopSpeed)
             RB.velocity = RB.velocity.normalized * CurrentTopSpeed;
 
 
-            Invoke(nameof(FlyModeOver), FlyTime);
+         Invoke(nameof(FlyModeOver), FlyTime);
     }
     private void DoGroundMode()
     {
         //disable plane model, enable player model
-        meshRenderer.enabled = true;
-        PlaneModel.gameObject.SetActive(false);
+        
+      
 
         //basic Inputs
         Vector3 Vec = Vector3.zero + Physics.gravity*Time.deltaTime;
@@ -76,11 +78,11 @@ public class CharacterMovement : MonoBehaviour
         float Yspeed = RB.velocity.y;
 
 
-        RB.velocity += Vec;
+        RB.velocity += Vec * BaseAcceleration/2;
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
 
         //drag 
-        if (Input.GetAxis("Horizontal") + Input.GetAxis("Vertical") == 0.0f )
+        if (Input.GetAxis("Horizontal") == 0.0f&& Input.GetAxis("Vertical") == 0.0f )
         {
             if( RB.velocity.magnitude > 0.5f)
             RB.velocity = new Vector3(RB.velocity.x/10, Yspeed, RB.velocity.z/10);
@@ -111,13 +113,14 @@ public class CharacterMovement : MonoBehaviour
     private IEnumerator Dash()
     {
         CurrentTopSpeed = DashSpeed;
-
+        Dashing = true;
         //uncomment the commented parts if you want UD vel to be unaffected by gravity
-      //  float Yspeed = RB.velocity.y;
+        //float Yspeed = RB.velocity.y;
         RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
         //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         yield return DashTimer;
         CurrentTopSpeed = BaseSpeed;
+        Dashing = false;
     }
     private IEnumerator FlyCharge()
     {
@@ -127,16 +130,22 @@ public class CharacterMovement : MonoBehaviour
     }
     private void FlyModeOver()
     {
+        meshRenderer.enabled = true;
+        PlaneModel.gameObject.SetActive(false);
         CurrentTopSpeed = BaseSpeed;
         GroundMode = true;
     }
-    private void OnCollisionEnter(Collision collision)
+    public void Charge()
     {
-        if (!collision.gameObject.TryGetComponent(out BasicEnemy Enemy))
-            return;
-
-        Destroy(collision.gameObject);
         StartCoroutine(FlyCharge());
-        
     }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (!collision.gameObject.TryGetComponent(out BasicEnemy Enemy))
+    //        return;
+    //
+    //    Destroy(collision.gameObject);
+    //    StartCoroutine(FlyCharge());
+    //    
+    //}
 }

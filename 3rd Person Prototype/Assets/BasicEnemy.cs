@@ -23,12 +23,16 @@ public class BasicEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!collision.body.TryGetComponent(out NewDash DashController))
+        if (!collision.body.TryGetComponent(out CharacterMovement Character))
             return;
 
         //TODO: Change this with isDashing bool check when implemented
-        if (DashController.DashCooldown > 0)
+        if (Character.Dashing == true)
+        {
+            Character.Charge();
             DestroyEnemy();
+        }
+           
 
         if (!collision.body.TryGetComponent(out HealthSystem collisionHealth))
             return;
@@ -69,7 +73,8 @@ public class BasicEnemy : MonoBehaviour
     private void DestroyEnemy()
     {
         GetComponent<HealthSystem>().SetHealth(0);
-        //Sounds Animations and events here
+        //Sounds Animations and events here\
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()
