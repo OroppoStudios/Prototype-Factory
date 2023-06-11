@@ -29,7 +29,7 @@ public class BasicEnemy : MonoBehaviour
         //TODO: Change this with isDashing bool check when implemented
         if (Character.Dashing == true)
         {
-            Character.Charge();
+            Character.ActivateCharge();
             DestroyEnemy();
         }
            
