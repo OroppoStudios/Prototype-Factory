@@ -690,16 +690,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseSpeed: 20
+  BaseAcceleration: 1
   GrappleSpeed: 50
   DashSpeed: 50
   FlyingSpeed: 50
   DashTime: 0.5
   FlyTime: 5
   FlyChargeWindow: 1
+  DashResetTime: 3
   JumpHeight: 15
+  DistToGround: 1.272
+  WhatIsGround:
+    serializedVersion: 2
+    m_Bits: 512
   InAir: 0
   FlyCharged: 0
   GroundMode: 1
+  Dashing: 0
+  CanDash: 1
   RB: {fileID: 0}
   PlaneModel: {fileID: 351751795173327932}
 --- !u!1 &585685334763637880
