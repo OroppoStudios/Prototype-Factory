@@ -3412,26 +3412,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
-        type: 3}
-      propertyPath: DistToGround
-      value: 1.272
-      objectReference: {fileID: 0}
-    - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
-        type: 3}
-      propertyPath: BoostPadSpeed
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
-        type: 3}
-      propertyPath: DashResetTime
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
-        type: 3}
-      propertyPath: WhatIsGround.m_Bits
-      value: 512
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
 --- !u!1001 &722864962493594909

@@ -694,7 +694,9 @@ MonoBehaviour:
   GrappleSpeed: 50
   DashSpeed: 50
   FlyingSpeed: 50
+  BoostPadSpeed: 30
   DashTime: 0.5
+  BoostDuration: 1
   FlyTime: 5
   FlyChargeWindow: 1
   DashResetTime: 3
