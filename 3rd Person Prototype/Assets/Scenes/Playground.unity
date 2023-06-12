@@ -2503,6 +2503,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1762682258}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1758311817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1758311817, guid: 1388ddc024576d94da324918d8c02ff2,
+    type: 3}
+  m_PrefabInstance: {fileID: 585685332884641630}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1762682258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3668,6 +3674,10 @@ PrefabInstance:
       propertyPath: RB
       value: 
       objectReference: {fileID: 2073713333}
+    - target: {fileID: 1677588205, guid: f396ffc651a2d7848a81c1ed81a4bd0e, type: 3}
+      propertyPath: Speedlines
+      value: 
+      objectReference: {fileID: 1758311817}
     - target: {fileID: 1449737779798750797, guid: f396ffc651a2d7848a81c1ed81a4bd0e,
         type: 3}
       propertyPath: m_RootOrder
