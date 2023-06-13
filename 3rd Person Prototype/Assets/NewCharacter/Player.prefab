@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1312fa0c4a66e694582b2e0486595c6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 10
+  sensitivity: 2
   lookXLimit: 74.7
   MouseInput: {x: 0, y: 0}
 --- !u!1 &585685333078661151
