@@ -23,7 +23,12 @@ public class BasicEnemy : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!collision.body.TryGetComponent(out CharacterMovement Character))
+        
+
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent(out CharacterMovement Character))
             return;
 
         //TODO: Change this with isDashing bool check when implemented
@@ -32,13 +37,12 @@ public class BasicEnemy : MonoBehaviour
             Character.ActivateCharge();
             DestroyEnemy();
         }
-           
 
-        if (!collision.body.TryGetComponent(out HealthSystem collisionHealth))
+
+        if (!other.TryGetComponent(out HealthSystem collisionHealth))
             return;
 
         DamagePlayer(collisionHealth);
-
     }
     private void Update()
     {

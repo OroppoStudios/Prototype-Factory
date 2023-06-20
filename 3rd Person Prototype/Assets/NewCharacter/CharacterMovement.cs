@@ -10,6 +10,7 @@ public class CharacterMovement : MonoBehaviour
     [Header("Player Speeds" + "\n")]
     [Range(0, 50)] public float BaseSpeed = 15;
     [Range(0, 1)] public float BaseAcceleration = 1;
+    [Range(1, 150)] public float BaseDecceleration = 1;
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
@@ -33,6 +34,7 @@ public class CharacterMovement : MonoBehaviour
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
     private MeshRenderer meshRenderer;
+    private bool AwaitReset = false;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -55,11 +57,16 @@ public class CharacterMovement : MonoBehaviour
        //if (InAir)
        //    return;
 
-        if (GroundMode&&!InAir)
+        if (GroundMode&&!InAir&&GetIfGrounded())
             DoGroundMode();
         else if(!GroundMode) DoFlyMode();
 
-        
+        if (AwaitReset && GetIfGrounded())
+        {
+            CanDash = true;
+            AwaitReset = false;
+        }
+            
     }
     private void DoFlyMode()
     {
@@ -89,7 +96,7 @@ public class CharacterMovement : MonoBehaviour
         if (Input.GetAxis("Horizontal") == 0.0f&& Input.GetAxis("Vertical") == 0.0f )
         {
             if( RB.velocity.magnitude > 0.5f)
-            RB.velocity = new Vector3(RB.velocity.x/10, Yspeed, RB.velocity.z/10);
+            RB.velocity = new Vector3((RB.velocity.x-RB.velocity.x/BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
             else RB.velocity = new Vector3(0, Yspeed, 0);
         }
 
@@ -149,7 +156,7 @@ public class CharacterMovement : MonoBehaviour
    
     internal void ResetDash()
     {
-        CanDash = true;
+        AwaitReset = true;
     }
     private void ResetFly()
     {
