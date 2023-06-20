@@ -827,7 +827,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30244
+  m_Name: pb_Mesh72810
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -991,7 +991,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30288
+  m_Name: pb_Mesh72854
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2504,7 +2504,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30200
+  m_Name: pb_Mesh72760
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2811,12 +2811,12 @@ PrefabInstance:
     - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
       propertyPath: FlyTime
-      value: 1
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
       propertyPath: FlyingSpeed
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 585685334076824757, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
