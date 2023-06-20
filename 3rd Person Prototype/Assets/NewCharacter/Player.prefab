@@ -434,7 +434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whatIsGrappleable:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 520
   gunTip: {fileID: 585685334881120304}
   cam: {fileID: 585685334760906079}
   player: {fileID: 585685334076824750}

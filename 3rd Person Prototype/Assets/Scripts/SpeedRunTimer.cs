@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SpeedRunTimer : MonoBehaviour
 {
+    public static SpeedRunTimer Instance;
     float Timer = 0;
-    bool TimerEnabled = false;
+   [HideInInspector] public bool TimerEnabled = false;
 
     private void Update()
     {
@@ -29,5 +30,9 @@ public class SpeedRunTimer : MonoBehaviour
         TimerEnabled = true;
     }
 
-
+    private void Awake()
+    {
+        if (!Instance)
+            Instance = this;
+    }
 }
