@@ -805,6 +805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseSpeed: 20
   BaseAcceleration: 1
+  BaseDecceleration: 1
   GrappleSpeed: 50
   DashSpeed: 50
   FlyingSpeed: 50
