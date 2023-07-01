@@ -15,6 +15,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
     [Range(0, 50)] public float BoostPadSpeed = 15;
+    [Range(0, 1)] public float AirControlReduction = 1;
     [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
     [Range(0, 3f)] public float BoostDuration = 1f;
@@ -54,10 +55,12 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       //if (InAir)
-       //    return;
+        //if (InAir)
+        //    return;
 
-        if (GroundMode&&!InAir&&GetIfGrounded())
+        //use this if you dont want to be able to control while in air
+        //&&GetIfGrounded()
+        if (GroundMode&&!InAir)
             DoGroundMode();
         else if(!GroundMode) DoFlyMode();
 
@@ -66,7 +69,9 @@ public class CharacterMovement : MonoBehaviour
             CanDash = true;
             AwaitReset = false;
         }
-            
+        //lazy fix
+        //basically dash wouldnt trigger cause it was in the do ground mode func
+      
     }
     private void DoFlyMode()
     {
@@ -88,6 +93,11 @@ public class CharacterMovement : MonoBehaviour
         Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
         Vec += transform.rotation * Vector3.right  * Input.GetAxisRaw("Horizontal");
         Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
+
+        //reduce control in air
+        if(!GetIfGrounded())
+            Vec *= (1 - AirControlReduction);
+
         float Yspeed = RB.velocity.y;
         RB.velocity += Vec * BaseAcceleration/2;
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
@@ -111,9 +121,9 @@ public class CharacterMovement : MonoBehaviour
         //jump
         if (Input.GetKeyDown(KeyCode.Space))
             RB.velocity += JumpHeight * Vector3.up* Convert.ToInt32(GetIfGrounded());
-        
+
         //dash
-        if (Input.GetKeyDown(KeyCode.LeftShift)&& CanDash)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
             StartCoroutine(Dash());
 
         //fly
