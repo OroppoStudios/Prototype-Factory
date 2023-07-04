@@ -810,6 +810,7 @@ MonoBehaviour:
   DashSpeed: 50
   FlyingSpeed: 50
   BoostPadSpeed: 30
+  AirControlReduction: 0
   DashTime: 0.5
   BoostDuration: 1
   FlyTime: 1.3
