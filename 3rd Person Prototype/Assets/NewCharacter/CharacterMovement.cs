@@ -20,7 +20,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 0.5f)] public float DashTime = 0.25f;
     [Range(0, 3f)] public float BoostDuration = 1f;
     [Range(0, 15)] public float FlyTime = 5;
-    [Range(0, 2.5f)] public float FlyChargeWindow =1f;
+    [Range(0, 2.5f)] public float FlyChargeWindow = 1f;
     [Range(0, 15)] public float DashResetTime = 5;
     [Header("Jump Specifics" + "\n")]
     [Range(0, 25)] public float JumpHeight = 15;
@@ -29,9 +29,9 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Player Other" + "\n")]
     private float CurrentTopSpeed = 1;
-    private WaitForSeconds DashTimer,FlyWindow,BoostTimer;
+    private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
 
-    [HideInInspector] public bool InAir = false, FlyCharged = false,GroundMode=true,Dashing=false,CanDash=true;
+    [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true;
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
     private MeshRenderer meshRenderer;
@@ -60,9 +60,9 @@ public class CharacterMovement : MonoBehaviour
 
         //use this if you dont want to be able to control while in air
         //&&GetIfGrounded()
-        if (GroundMode&&!InAir)
+        if (GroundMode && !InAir)
             DoGroundMode();
-        else if(!GroundMode) DoFlyMode();
+        else if (!GroundMode) DoFlyMode();
 
         if (AwaitReset && GetIfGrounded())
         {
@@ -71,72 +71,78 @@ public class CharacterMovement : MonoBehaviour
         }
         //lazy fix
         //basically dash wouldnt trigger cause it was in the do ground mode func
-      
+
     }
     private void DoFlyMode()
     {
         //enable plane model, disable player model
         meshRenderer.enabled = false;
         PlaneModel.gameObject.SetActive(true);
-        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x,0,0);
+        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x, 0, 0);
         CurrentTopSpeed = FlyingSpeed;
-        RB.velocity += transform.GetChild(0).rotation* Vector3.forward;
+        RB.velocity += transform.GetChild(0).rotation * Vector3.forward;
 
         if (RB.velocity.magnitude > CurrentTopSpeed)
             RB.velocity = RB.velocity.normalized * CurrentTopSpeed;
 
 
-         Invoke(nameof(ResetFly), FlyTime);
+        Invoke(nameof(ResetFly), FlyTime);
     }
     private void DoGroundMode()
     {
         Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
-        Vec += transform.rotation * Vector3.right  * Input.GetAxisRaw("Horizontal");
+        Vec += transform.rotation * Vector3.right * Input.GetAxisRaw("Horizontal");
         Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
 
         //reduce control in air
-        if(!GetIfGrounded())
+        if (!GetIfGrounded())
             Vec *= (1 - AirControlReduction);
 
         float Yspeed = RB.velocity.y;
-        RB.velocity += Vec * BaseAcceleration/2;
+        RB.velocity += Vec * BaseAcceleration / 2;
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
 
         //drag 
-        if (Input.GetAxis("Horizontal") == 0.0f&& Input.GetAxis("Vertical") == 0.0f )
+        if (Input.GetAxis("Horizontal") == 0.0f && Input.GetAxis("Vertical") == 0.0f)
         {
-            if( RB.velocity.magnitude > 0.5f)
-            RB.velocity = new Vector3((RB.velocity.x-RB.velocity.x/BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
+            if (RB.velocity.magnitude > 0.5f)
+                RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
             else RB.velocity = new Vector3(0, Yspeed, 0);
         }
 
         //speed cap
-        if (RB.velocity.magnitude> CurrentTopSpeed)
+        if (RB.velocity.magnitude > CurrentTopSpeed)
         {
             //RB.velocity = RB.velocity.normalized * Speed;
-            
+
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
         //jump
         if (Input.GetKeyDown(KeyCode.Space))
-            RB.velocity += JumpHeight * Vector3.up* Convert.ToInt32(GetIfGrounded());
+            RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
 
         //dash
         if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
-            StartCoroutine(Dash());
+            StartDash();
 
         //fly
         if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
             GroundMode = false;
     }
     public bool GetIfGrounded()
-    {      
-         return Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround);     
+    {
+        return Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround);
     }
-
+    private void StartDash()
+    {
+        //this is so that other speed boosts do not stop the dash short and reset its trajectory
+        StopAllCoroutines();
+        StartCoroutine(Dash());
+    }
     private IEnumerator Dash()
     {
+   
         CurrentTopSpeed = DashSpeed;
         Dashing = true;
         CanDash = false;
@@ -144,6 +150,8 @@ public class CharacterMovement : MonoBehaviour
         //uncomment the commented parts if you want UD vel to be unaffected by gravity
         //float Yspeed = RB.velocity.y;
         RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
+        if (RB.velocity.magnitude <= 0.1f)
+            RB.velocity = transform.rotation * Vector3.forward * CurrentTopSpeed;
         //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         yield return DashTimer;
         CurrentTopSpeed = BaseSpeed;
