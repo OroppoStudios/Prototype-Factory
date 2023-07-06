@@ -30,6 +30,8 @@ public class CharacterMovement : MonoBehaviour
     [Header("Player Other" + "\n")]
     private float CurrentTopSpeed = 1;
     private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
+    // I added this to prototype extending flight duration mid flight - Kai
+    public bool FlyExtended = false;
 
     [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true;
     [HideInInspector] public Rigidbody RB;
@@ -85,8 +87,15 @@ public class CharacterMovement : MonoBehaviour
         if (RB.velocity.magnitude > CurrentTopSpeed)
             RB.velocity = RB.velocity.normalized * CurrentTopSpeed;
 
-
         Invoke(nameof(ResetFly), FlyTime);
+
+        // I added this to prototype extending flight duration mid flight - Kai
+        if(FlyExtended == true)
+        {
+            CancelInvoke(nameof(ResetFly));
+            Invoke(nameof(ResetFly), FlyTime);
+            FlyExtended = false;
+        }
     }
     private void DoGroundMode()
     {
