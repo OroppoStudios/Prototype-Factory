@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.InputSystem.LowLevel;
+using FMOD.Studio;
 
 
-public class SoundManager : MonoBehaviour
+public sealed class SoundManager
 {
     // replace with #unityevents later
     public event EventHandler ManagerInitialized;
-    public event EventHandler ManagerAccessed;
+    public event EventHandler ManagerRemoved;
+    public event EventHandler ManagerLoaded;
 
     private static SoundManager _instance;
     public static SoundManager instance
@@ -17,29 +18,93 @@ public class SoundManager : MonoBehaviour
         get
         {
             return _instance;
-
         }
         set
         {
             if (_instance == null)
-                _instance = value;
-        }
+                _instance = new SoundManager();
+            else
+                Debug.LogWarning("SoundManager has already been initialized please use the master Manager instead.");
+            _instance.OnManagerInitialized();
+        }      
     }
 
-    [Header("Voice Channel Assignment.")]
-    private static FMOD.Studio.VCA VCA_Master;
-    private static FMOD.Studio.VCA VCA_Ambient;
-    private static FMOD.Studio.VCA VCA_Effects;
-    private static FMOD.Studio.VCA VCA_UI;
-    private static FMOD.Studio.VCA VCA_Voice;
-    private static FMOD.Studio.VCA VCA_Music;
-
-    void OnManagerInitialized ()
+    ~SoundManager()
     {
-        throw new NotImplementedException();
+        OnManagerRemoved();
     }
-    void OnManagerAccessed()
+
+    [Header("Voice Channel Assignment")]
+    private static VCA VCA_Master;
+    private static VCA VCA_Ambient;
+    private static VCA VCA_Effects;
+    private static VCA VCA_UI;
+    private static VCA VCA_Voice;
+    private static VCA VCA_Music;
+
+    [Header("Volume Sliders")]
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float MasterVolume;
+
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float SoundFXVolume;
+
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float AmbientVolume;
+
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float DialogueVolume;
+
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float MusicVolume;
+
+    [SerializeField]
+    [Range(-80f, 10f)]
+    private float UIVolume;
+
+    void OnManagerInitialized()
     {
-        throw new NotImplementedException();
+        InitVCA();
+        ManagerInitialized.Invoke(this, EventArgs.Empty);
+    }
+
+    void OnManagerRemoved()
+    {
+        ManagerRemoved.Invoke(this, EventArgs.Empty);
+    }
+    void InitVCA()
+    {
+        VCA_Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
+        VCA_Voice = FMODUnity.RuntimeManager.GetVCA("vca:/VoiceLines");
+        VCA_Effects = FMODUnity.RuntimeManager.GetVCA("vca:/SFX");
+        VCA_Music = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
+        VCA_Ambient = FMODUnity.RuntimeManager.GetVCA("vca:/Ambience");
+        VCA_UI = FMODUnity.RuntimeManager.GetVCA("vca:/UI");
+    }
+
+    public void SetVolume()
+    {
+        VCA_Master.setVolume(MasterVolume);
+        VCA_Voice.setVolume(DialogueVolume);
+        VCA_Effects.setVolume(SoundFXVolume);
+        VCA_Music.setVolume(MusicVolume);
+        VCA_Ambient.setVolume(AmbientVolume);
+        VCA_UI.setVolume(UIVolume);
+    }
+
+    public void SetParameter(EventInstance audioEvent, string parameterName, float value)
+    {
+        audioEvent.setParameterByName(parameterName, value);
+        
+    }
+
+    public void SetParameter(EventInstance audioEvent, PARAMETER_ID ID, float value)
+    {
+        audioEvent.setParameterByID(ID, value);
     }
 }
