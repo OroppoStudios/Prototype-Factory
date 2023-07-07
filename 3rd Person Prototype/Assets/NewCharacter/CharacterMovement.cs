@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using System;
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(HealthSystem))]
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 2)] public float DistToGround = 1;
     public LayerMask WhatIsGround;
 
+    private Vector3 vecta;
     [Header("Player Other" + "\n")]
     private float CurrentTopSpeed = 1;
     private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
@@ -42,6 +44,8 @@ public class CharacterMovement : MonoBehaviour
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * DistToGround);
+
+        Gizmos.DrawLine(transform.position, transform.position +vecta);
     }
     private void Awake()
     {
@@ -107,10 +111,16 @@ public class CharacterMovement : MonoBehaviour
         if (!GetIfGrounded())
             Vec *= (1 - AirControlReduction);
 
-        float Yspeed = RB.velocity.y;
-        RB.velocity += Vec * BaseAcceleration / 2;
-        RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
 
+        vecta = Vec;
+        float Yspeed = RB.velocity.y;
+
+        if(!((Physics.Raycast(transform.position, transform.rotation * Vector3.forward, 1, WhatIsGround) && !GetIfGrounded())))
+        {
+            RB.velocity += Vec * BaseAcceleration / 2;
+            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+        }
+      
         //drag 
         if (Input.GetAxis("Horizontal") == 0.0f && Input.GetAxis("Vertical") == 0.0f)
         {
@@ -118,6 +128,8 @@ public class CharacterMovement : MonoBehaviour
                 RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
             else RB.velocity = new Vector3(0, Yspeed, 0);
         }
+       // else if 
+       //     RB.velocity += transform.rotation * Vector3.back;
 
         //speed cap
         if (RB.velocity.magnitude > CurrentTopSpeed)
@@ -150,8 +162,7 @@ public class CharacterMovement : MonoBehaviour
         StartCoroutine(Dash());
     }
     private IEnumerator Dash()
-    {
-   
+    {  
         CurrentTopSpeed = DashSpeed;
         Dashing = true;
         CanDash = false;
@@ -193,7 +204,7 @@ public class CharacterMovement : MonoBehaviour
         GroundMode = true;
     }
   
-
+   
     public void ActivateCharge()
     {
         StartCoroutine(FlyCharge());
