@@ -11,7 +11,7 @@ public class MissileSystem : MonoBehaviour
     {
         new Vector2(-160.0f,90.0f), new Vector2(-160.0f,-90.0f), new Vector2(160.0f,-90.0f),new Vector2(160.0f,90.0f)
     };
-    [Range(0, 50)] public float InitFOV = 28.0f;
+   protected const float InitFOV = 28.0f;
     [Range(0,1)] public float TargetingSystemSize=1;
     public List<RectTransform> TargetingCorners;
    
@@ -22,8 +22,6 @@ public class MissileSystem : MonoBehaviour
     }
     private void OnValidate()
     {
-        Debug.Log(TargetingSystemSize);
-        Debug.Log(TargetingCorners[0].anchoredPosition);
         for (int i =0; i <= 3; i++)
         {
             TargetingCorners[i].anchoredPosition = InitCornerPos[i] * TargetingSystemSize;
