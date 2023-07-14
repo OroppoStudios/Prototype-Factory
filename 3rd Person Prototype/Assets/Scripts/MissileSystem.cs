@@ -5,8 +5,9 @@ using UnityEngine;
 public class MissileSystem : MonoBehaviour
 {
     public bool Tracking;
-    public Camera Camera;
+    public Camera Camera, PlayerCamera;
     public Transform Target;
+    public GameObject TargetIndicator;
     protected readonly Vector2[] InitCornerPos = new Vector2[]
     {
         new Vector2(-160.0f,90.0f), new Vector2(-160.0f,-90.0f), new Vector2(160.0f,-90.0f),new Vector2(160.0f,90.0f)
@@ -15,11 +16,7 @@ public class MissileSystem : MonoBehaviour
     [Range(0,1)] public float TargetingSystemSize=1;
     public List<RectTransform> TargetingCorners;
    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
     private void OnValidate()
     {
         for (int i =0; i <= 3; i++)
@@ -31,11 +28,16 @@ public class MissileSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     
-       // Debug.Log(Camera.WorldToViewportPoint(Target.position));
-        Debug.Log(IsVisible(Camera, Target.gameObject));
-       //Ray ray = Camera.ScreenPointToRay(Target.position);
-       //Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
+       Tracking = (IsVisible(Camera, Target.gameObject));
+                  
+       TargetIndicator.SetActive(Tracking);
+           
+       TargetIndicator.GetComponent<RectTransform>().anchoredPosition =
+               new Vector2((Camera.WorldToViewportPoint(Target.position).x- 0.5f ) * 320.0f,
+               (Camera.WorldToViewportPoint(Target.position).y - 0.5f) * 180.0f); ;
+
+        
+        
     }
 
     private bool IsVisible(Camera c, GameObject target)
