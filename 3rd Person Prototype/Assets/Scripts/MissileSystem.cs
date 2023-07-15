@@ -1,31 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEditor;
 public class MissileSystem : MonoBehaviour
 {
+    [Header("Don't Touch These \n")]
     public bool Tracking;
+    [HideInInspector] public bool LockedOn;
     public Camera Camera, PlayerCamera;
-    public Transform Target;
+    private Transform Target;
     public GameObject TargetIndicator;
     protected readonly Vector2[] InitCornerPos = new Vector2[]
     {
         new Vector2(-160.0f,90.0f), new Vector2(-160.0f,-90.0f), new Vector2(160.0f,-90.0f),new Vector2(160.0f,90.0f)
     };
     protected const float InitFOV = 28.0f;
-    public LayerMask WhatIsTargetable;
-    [Range(0,1)] public float TargetingSystemSize=1;
-    [Range(0, 150)] public float MissileSeekRange = 50f;
-    public List<RectTransform> TargetingCorners;
    
+    public List<RectTransform> TargetingCorners;
 
+    [Header("Touch These \n")]
+    public LayerMask WhatIsTargetable;
+    [Range(0, 1)] public float TargetingSystemUISize = 1;
+    [Range(0, 150)] public float MissileSeekRange = 50f;
+    [Range(0, 3)] public float LockOnTime = 1;
     private void OnValidate()
     {
         for (int i =0; i <= 3; i++)
         {
-            TargetingCorners[i].anchoredPosition = InitCornerPos[i] * TargetingSystemSize;
+            TargetingCorners[i].anchoredPosition = InitCornerPos[i] * TargetingSystemUISize;
         }
-        Camera.fieldOfView = InitFOV * TargetingSystemSize;
+        Camera.fieldOfView = InitFOV * TargetingSystemUISize;
     }
     // Update is called once per frame
     void Update()
@@ -36,6 +40,11 @@ public class MissileSystem : MonoBehaviour
             TryTarget(Target);
 
       
+    }
+    private void Awake()
+    {
+        TargetIndicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
+        TargetIndicator.GetComponent<TargetingIcon>().MissileSystem = this;
     }
     private void OnDrawGizmosSelected()
     {
