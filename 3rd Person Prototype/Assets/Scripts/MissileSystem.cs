@@ -2,27 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using NaughtyAttributes;
 public class MissileSystem : MonoBehaviour
 {
-    [Header("Don't Touch These \n")]
-    public bool Tracking;
-    [HideInInspector] public  bool LockedOn;
-    public Camera Camera, PlayerCamera;
-    private Transform Target;
-    public GameObject TargetIndicator;
+   
+    [BoxGroup("Don't Touch These ")]public bool Tracking;
+    [BoxGroup("Don't Touch These ")][HideInInspector] public  bool LockedOn;
+    [BoxGroup("Don't Touch These ")]public Camera Camera, PlayerCamera;
+    [BoxGroup("Don't Touch These ")]private Transform Target;
+    [BoxGroup("Don't Touch These ")]public GameObject TargetIndicator;
+    [BoxGroup("Don't Touch These ")]
     protected readonly Vector2[] InitCornerPos = new Vector2[]
     {
         new Vector2(-160.0f,90.0f), new Vector2(-160.0f,-90.0f), new Vector2(160.0f,-90.0f),new Vector2(160.0f,90.0f)
     };
     protected const float InitFOV = 28.0f;
-   
-    public List<RectTransform> TargetingCorners;
 
-    [Header("Touch These \n")]
-    public LayerMask WhatIsTargetable;
-    [Range(0, 1)] public float TargetingSystemUISize = 1;
-    [Range(0, 150)] public float MissileSeekRange = 50f;
-    [Range(0, 3)] public float LockOnTime = 1;
+    [BoxGroup("Don't Touch These ")]  public List<RectTransform> TargetingCorners;
+
+    [BoxGroup("Touch These ")]
+    [ShowAssetPreview(128, 128)]
+    public GameObject MissilePrefab;
+
+    [BoxGroup("Touch These ")] public LayerMask WhatIsTargetable;
+    [BoxGroup("Touch These ")][Range(0, 1)] public float TargetingSystemUISize = 1;
+    [BoxGroup("Touch These ")][Range(0, 150)] public float MissileSeekRange = 50f;
+    [BoxGroup("Touch These ")] [Range(0, 3)] public float LockOnTime = 1;
+    [BoxGroup("Touch These ")] [Range(1, 50)] public float MissleSpeed = 25;
     private void OnValidate()
     {
         for (int i =0; i <= 3; i++)
@@ -39,7 +45,18 @@ public class MissileSystem : MonoBehaviour
         if(Target)
             TryTarget(Target);
 
-      
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            Shoot();
+    }
+    
+    private void Shoot()
+    {
+        GameObject Projectile = Instantiate(MissilePrefab,transform.position,Camera.transform.rotation);
+        Projectile.transform.parent = null;
+        Projectile.transform.Rotate(Vector3.up * -90);
+        Projectile.GetComponent<Missle>().Target = Target;
+        Projectile.GetComponent<Missle>().Tracking = LockedOn;
+        Projectile.GetComponent<Missle>().Speed = MissleSpeed;
     }
     private void Awake()
     {
@@ -76,7 +93,7 @@ public class MissileSystem : MonoBehaviour
         TargetIndicator.SetActive(Tracking);
 
         TargetIndicator.GetComponent<RectTransform>().anchoredPosition =
-                new Vector2((Camera.WorldToViewportPoint(T.position).x - 0.5f) * 320.0f,
+               TargetingSystemUISize* new Vector2((Camera.WorldToViewportPoint(T.position).x - 0.5f) * 320.0f,
                 (Camera.WorldToViewportPoint(T.position).y - 0.5f) * 180.0f); ;
 
     }

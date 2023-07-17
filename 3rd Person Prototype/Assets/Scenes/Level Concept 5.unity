@@ -34568,6 +34568,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7103093}
     - target: {fileID: 2049681497, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: MissilePrefab
+      value: 
+      objectReference: {fileID: 1071163369004254373, guid: 737b8cf589ef76041aa29bb8600d3eeb,
+        type: 3}
+    - target: {fileID: 2049681497, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
       propertyPath: TargetIndicator
       value: 
       objectReference: {fileID: 918197201}
@@ -34586,6 +34591,26 @@ PrefabInstance:
     - target: {fileID: 2049681497, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
       propertyPath: WhatIsTargetable.m_Bits
       value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 351751795173327932, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 585685333176477053, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 585685333554718897, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 585685333603878261, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 585685334076824750, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
@@ -34646,6 +34671,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 585685334076824756, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222668000369555309, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8789970429064914683, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
@@ -47695,7 +47735,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31020
+  m_Name: pb_Mesh31318
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -47954,7 +47994,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30608
+  m_Name: pb_Mesh30902
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
