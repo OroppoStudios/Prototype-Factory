@@ -6,7 +6,7 @@ public class MissileSystem : MonoBehaviour
 {
     [Header("Don't Touch These \n")]
     public bool Tracking;
-    [HideInInspector] public bool LockedOn;
+    [HideInInspector] public  bool LockedOn;
     public Camera Camera, PlayerCamera;
     private Transform Target;
     public GameObject TargetIndicator;
