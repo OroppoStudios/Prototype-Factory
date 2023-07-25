@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using System;
+using UnityEngine.VFX;
+
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(HealthSystem))]
 
@@ -38,8 +40,10 @@ public class CharacterMovement : MonoBehaviour
     [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true;
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
+    public VisualEffect SonicBoom_VFX;
     private MeshRenderer meshRenderer;
     private bool AwaitReset = false;
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -160,6 +164,7 @@ public class CharacterMovement : MonoBehaviour
         //this is so that other speed boosts do not stop the dash short and reset its trajectory
         StopAllCoroutines();
         StartCoroutine(Dash());
+        SonicBoom_VFX.Play();
     }
     private IEnumerator Dash()
     {  
