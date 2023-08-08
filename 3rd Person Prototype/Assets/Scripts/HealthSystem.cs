@@ -8,7 +8,7 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 5;
 
-    private int _currentHealth;
+    [SerializeField] private int _currentHealth;
     public int currentHealth
     {
         get { return _currentHealth; }
@@ -71,8 +71,7 @@ public class HealthSystem : MonoBehaviour
     {
         if (Invulnerable == false && currentHealth >= 0)
         {
-            if (transform.tag == "Player")
-            {
+           
                 currentHealth += amount;
 
                 float currentHealthPercent = (float)currentHealth / (float)maxHealth;
@@ -83,9 +82,9 @@ public class HealthSystem : MonoBehaviour
                 if (currentHealth <= 0.0f)
                 {
                     OnObjectDeath?.Invoke(gameObject);
-                    Debug.Log("Player has Died");
+                 
                 }
-            }
+            
             OnTakeDamage(amount);
         }
     }

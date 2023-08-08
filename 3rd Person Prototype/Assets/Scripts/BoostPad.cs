@@ -19,6 +19,8 @@ public class BoostPad : MonoBehaviour
         if (!other.TryGetComponent(out CharacterMovement Character))
             return;
 
+        Debug.Log(Character.IsBoosting);
         Character.ActivateBoost(Quaternion.Euler(Direction) * Vector3.forward);
+       
     }
 }

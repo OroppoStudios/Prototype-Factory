@@ -17,7 +17,6 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
-    [Range(0, 50)] public float BoostPadSpeed = 15;
     [Range(0, 1)] public float AirControlReduction = 1;
     [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
@@ -25,6 +24,8 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 15)] public float FlyTime = 5;
     [Range(0, 2.5f)] public float FlyChargeWindow = 1f;
     [Range(0, 15)] public float DashResetTime = 5;
+    [Tooltip("Speeds depending on how many pads you hit consecutively")] 
+    [Range(0, 200)] public List<float> BoostPadSpeeds;
     [Header("Jump Specifics" + "\n")]
     [Range(0, 25)] public float JumpHeight = 15;
     [Range(0, 2)] public float DistToGround = 1;
@@ -43,7 +44,8 @@ public class CharacterMovement : MonoBehaviour
     public VisualEffect SonicBoom_VFX;
     private MeshRenderer meshRenderer;
     private bool AwaitReset = false;
-
+    [HideInInspector] public bool IsBoosting = false;
+    [HideInInspector] public int BoostLevel = 0;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -53,6 +55,7 @@ public class CharacterMovement : MonoBehaviour
     }
     private void Awake()
     {
+
         RB = GetComponent<Rigidbody>();
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
@@ -181,14 +184,17 @@ public class CharacterMovement : MonoBehaviour
         yield return DashTimer;
         CurrentTopSpeed = BaseSpeed;
         Dashing = false;
+
     }
-    private IEnumerator Boost(Vector3 Direction)
+    private IEnumerator Boost(Vector3 Direction, float Speed)
     {
-        Debug.Log(Direction);
-        CurrentTopSpeed = BoostPadSpeed;
+        IsBoosting = true;
+        CurrentTopSpeed = Speed;
         RB.velocity = Direction * CurrentTopSpeed;
         yield return BoostTimer;
         CurrentTopSpeed = BaseSpeed;
+        IsBoosting = false;
+        BoostLevel = 0;
     }
     private IEnumerator FlyCharge()
     {
@@ -216,8 +222,14 @@ public class CharacterMovement : MonoBehaviour
     }
     public void ActivateBoost(Vector3 Direction)
     {
-       
-        StartCoroutine(Boost(Direction));
+        if (BoostLevel != 0)
+            StopAllCoroutines();
+
+        StartCoroutine(Boost(Direction, BoostPadSpeeds[BoostLevel]));
+
+        if (BoostLevel < BoostPadSpeeds.Count)
+            BoostLevel++;
+
     }
     //private void OnCollisionEnter(Collision collision)
     //{

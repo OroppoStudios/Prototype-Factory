@@ -18,9 +18,20 @@ public class BasicEnemy : MonoBehaviour
     [Range(0, 100)] public float sightRange = 10;
     [Range(0, 100)] public float projectileSpeed = 5;
     [Range(0, 10)] public float attackResetTimer = 2;
-
-
-
+    public HealthSystem ThisHealth;
+    private void OnValidate()
+    {
+        ThisHealth = GetComponent<HealthSystem>();
+    }
+    private void Awake()
+    {
+        ThisHealth.OnObjectDeath += HandleObjectDeath;
+    }
+    private void HandleObjectDeath(GameObject obj)
+    {
+        Debug.Log("triggered");
+        Destroy(obj);
+    }
     private void OnCollisionEnter(Collision collision)
     {
         
@@ -34,6 +45,10 @@ public class BasicEnemy : MonoBehaviour
         //TODO: Change this with isDashing bool check when implemented
         if (Character.Dashing == true)
         {
+            //disable the indicator on the player
+            Character.gameObject.TryGetComponent(out MissileSystem Missle);
+            Missle.TargetIndicator.SetActive(false);
+
             Character.ActivateCharge();
             DestroyEnemy();
         }
@@ -50,9 +65,9 @@ public class BasicEnemy : MonoBehaviour
         if (!playerInRange)
             return;
         
-        AttackPlayer(Player);
+        AttackTarget(Player);
     }
-    private void AttackPlayer(GameObject Target)
+    private void AttackTarget(GameObject Target)
     {
         if (!canAttack)
             return;
@@ -76,9 +91,9 @@ public class BasicEnemy : MonoBehaviour
     }
     private void DestroyEnemy()
     {
-        GetComponent<HealthSystem>().SetHealth(0);
+        GetComponent<HealthSystem>().ModifyHealth(-GetComponent<HealthSystem>().currentHealth);
         //Sounds Animations and events here\
-        Destroy(gameObject);
+     
     }
 
     private void OnDrawGizmosSelected()

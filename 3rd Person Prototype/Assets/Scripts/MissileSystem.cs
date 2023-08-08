@@ -25,7 +25,7 @@ public class MissileSystem : MonoBehaviour
     public GameObject MissilePrefab;
 
     [BoxGroup("Touch These ")] public LayerMask WhatIsTargetable;
-    [BoxGroup("Touch These ")][Range(0, 1)] public float TargetingSystemUISize = 1;
+    [Tooltip("UI size of targeting area")] [BoxGroup("Touch These ")][Range(0, 1)] public float TargetingSystemUISize = 1;
     [BoxGroup("Touch These ")][Range(0, 150)] public float MissileSeekRange = 50f;
     [BoxGroup("Touch These ")] [Range(0, 3)] public float LockOnTime = 1;
     [BoxGroup("Touch These ")] [Range(1, 50)] public float MissleSpeed = 25;
