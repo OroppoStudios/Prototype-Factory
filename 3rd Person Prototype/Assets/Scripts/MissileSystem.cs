@@ -28,7 +28,7 @@ public class MissileSystem : MonoBehaviour
     [Tooltip("UI size of targeting area")] [BoxGroup("Touch These ")][Range(0, 1)] public float TargetingSystemUISize = 1;
     [BoxGroup("Touch These ")][Range(0, 150)] public float MissileSeekRange = 50f;
     [BoxGroup("Touch These ")] [Range(0, 3)] public float LockOnTime = 1;
-    [BoxGroup("Touch These ")] [Range(1, 50)] public float MissleSpeed = 25;
+    [BoxGroup("Touch These ")] [Range(1, 300)] public float MissleSpeed = 25;
     private void OnValidate()
     {
         for (int i =0; i <= 3; i++)

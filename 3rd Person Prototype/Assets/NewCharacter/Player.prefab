@@ -2104,13 +2104,20 @@ MonoBehaviour:
   GrappleSpeed: 50
   DashSpeed: 50
   FlyingSpeed: 50
-  BoostPadSpeed: 30
   AirControlReduction: 0
   DashTime: 0.5
   BoostDuration: 1
   FlyTime: 1.3
   FlyChargeWindow: 1
   DashResetTime: 1
+  BoostPadSpeeds:
+  - 30
+  - 60
+  - 90
+  - 120
+  - 120
+  - 120
+  - 120
   JumpHeight: 15
   DistToGround: 1.272
   WhatIsGround:
@@ -2125,6 +2132,8 @@ MonoBehaviour:
   RB: {fileID: 0}
   PlaneModel: {fileID: 351751795173327932}
   SonicBoom_VFX: {fileID: 9080013992775275776}
+  IsBoosting: 0
+  BoostLevel: 0
 --- !u!114 &2353172684299127067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2138,6 +2147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 5
+  _currentHealth: 0
   Invulnerable: 0
   fadeInTime: 0.5
 --- !u!114 &2049681497
@@ -2168,9 +2178,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   TargetingSystemUISize: 1
-  MissileSeekRange: 45.9
+  MissileSeekRange: 100
   LockOnTime: 1
-  MissleSpeed: 25
+  MissleSpeed: 85
 --- !u!1 &585685334763637880
 GameObject:
   m_ObjectHideFlags: 0
