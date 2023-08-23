@@ -226,6 +226,7 @@ public class CharacterMovement : MonoBehaviour
             StopAllCoroutines();
 
         StartCoroutine(Boost(Direction, BoostPadSpeeds[BoostLevel]));
+        SonicBoom_VFX.Play();
 
         if (BoostLevel < BoostPadSpeeds.Count)
             BoostLevel++;
