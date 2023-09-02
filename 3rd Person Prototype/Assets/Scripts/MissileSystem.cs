@@ -40,10 +40,13 @@ public class MissileSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Target = null;
+        
         Collider[] Targets = Physics.OverlapSphere(transform.position, MissileSeekRange, WhatIsTargetable);
         Target = GetClosestEnemy(Targets);
-        if(Target)
+        if (Target)
             TryTarget(Target);
+        else TargetIndicator.SetActive(false);
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
             Shoot();

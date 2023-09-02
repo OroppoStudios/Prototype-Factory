@@ -12,8 +12,9 @@ public class CharacterMovement : MonoBehaviour
 {
     [Header("Player Speeds" + "\n")]
     [Range(0, 50)] public float BaseSpeed = 15;
-    [Range(0, 1)] public float BaseAcceleration = 1;
+    [Range(0, 10)] public float BaseAcceleration = 1;
     [Range(1, 150)] public float BaseDecceleration = 1;
+    [Range(0, 3)] public float DashDecceleration = 1;
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
@@ -86,6 +87,7 @@ public class CharacterMovement : MonoBehaviour
         //basically dash wouldnt trigger cause it was in the do ground mode func
 
     }
+  
     private void DoFlyMode()
     {
         //enable plane model, disable player model
@@ -182,9 +184,20 @@ public class CharacterMovement : MonoBehaviour
             RB.velocity = transform.rotation * Vector3.forward * CurrentTopSpeed;
         //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         yield return DashTimer;
-        CurrentTopSpeed = BaseSpeed;
         Dashing = false;
-
+        StartCoroutine(DashSlowDown());
+    }
+    private IEnumerator DashSlowDown()
+    {
+        float i = 0.01f;
+        while (i<DashDecceleration)
+        {
+            Debug.Log(i/DashDecceleration );
+            CurrentTopSpeed = BaseSpeed+(DashSpeed-BaseSpeed)*(1- i / DashDecceleration);
+            i += 0.01f;
+            yield return new WaitForSeconds(0.01f);
+        }
+        CurrentTopSpeed = BaseSpeed;
     }
     private IEnumerator Boost(Vector3 Direction, float Speed)
     {
