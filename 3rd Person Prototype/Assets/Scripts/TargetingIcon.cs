@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class TargetingIcon : MonoBehaviour
 {
     public WaitForSeconds LockOnWait = new WaitForSeconds(1);
@@ -22,8 +22,10 @@ public class TargetingIcon : MonoBehaviour
     }
     private IEnumerator LockOn()
     {
+        GetComponent<RawImage>().color = Color.red;
         yield return LockOnWait;
         Debug.Log("Locked in");
         MissileSystem.LockedOn = true;
+        GetComponent<RawImage>().color = Color.green;
     }
 }

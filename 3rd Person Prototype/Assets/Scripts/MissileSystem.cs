@@ -11,6 +11,7 @@ public class MissileSystem : MonoBehaviour
     [BoxGroup("Don't Touch These ")]public Camera Camera, PlayerCamera;
     [BoxGroup("Don't Touch These ")]private Transform Target;
     [BoxGroup("Don't Touch These ")]public GameObject TargetIndicator;
+    [BoxGroup("Don't Touch These ")] public List<GameObject> TargetIndicators;
     [BoxGroup("Don't Touch These ")]
     protected readonly Vector2[] InitCornerPos = new Vector2[]
     {
@@ -19,16 +20,19 @@ public class MissileSystem : MonoBehaviour
     protected const float InitFOV = 28.0f;
 
     [BoxGroup("Don't Touch These ")]  public List<RectTransform> TargetingCorners;
-
+    [BoxGroup("Don't Touch These ")] public List<Transform> Targets = new List<Transform>(5);
     [BoxGroup("Touch These ")]
-    [ShowAssetPreview(128, 128)]
+    [ShowAssetPreview(64, 64)]
     public GameObject MissilePrefab;
 
     [BoxGroup("Touch These ")] public LayerMask WhatIsTargetable;
     [Tooltip("UI size of targeting area")] [BoxGroup("Touch These ")][Range(0, 1)] public float TargetingSystemUISize = 1;
     [BoxGroup("Touch These ")][Range(0, 150)] public float MissileSeekRange = 50f;
     [BoxGroup("Touch These ")] [Range(0, 3)] public float LockOnTime = 1;
+    [BoxGroup("Touch These ")][Range(0, 5)] public int MaxTargets = 1;
     [BoxGroup("Touch These ")] [Range(1, 300)] public float MissleSpeed = 25;
+
+  
     private void OnValidate()
     {
         for (int i =0; i <= 3; i++)
@@ -41,15 +45,25 @@ public class MissileSystem : MonoBehaviour
     void Update()
     {
         Target = null;
+       
+        Collider[] colls = Physics.OverlapSphere(transform.position, MissileSeekRange, WhatIsTargetable);
+       // Target = GetClosestEnemy(colls);
         
-        Collider[] Targets = Physics.OverlapSphere(transform.position, MissileSeekRange, WhatIsTargetable);
-        Target = GetClosestEnemy(Targets);
-        if (Target)
-            TryTarget(Target);
-        else TargetIndicator.SetActive(false);
-
+       //if (Target)
+       //    TryTarget(Target);
+       //else TargetIndicator.SetActive(false);
+       //
         if (Input.GetKeyDown(KeyCode.Mouse0))
             Shoot();
+       
+        Targets.Clear();
+        Targets.TrimExcess();
+        Targets = GetClosestEnemies(colls);
+        Debug.Log(Targets.Count);
+        if (Targets[0])
+            ValidateIndicators(Targets);
+        else for (int i = 0; i < MaxTargets; i++)
+               TargetIndicators[i].SetActive((Targets[i]!=null) ? true : false);       
     }
     
     private void Shoot()
@@ -65,6 +79,11 @@ public class MissileSystem : MonoBehaviour
     {
         TargetIndicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
         TargetIndicator.GetComponent<TargetingIcon>().MissileSystem = this;
+        foreach (GameObject Indicator in TargetIndicators)
+        {
+            Indicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
+            Indicator.GetComponent<TargetingIcon>().MissileSystem = this;
+        }
     }
     private void OnDrawGizmosSelected()
     {
@@ -89,6 +108,45 @@ public class MissileSystem : MonoBehaviour
 
         return bestTarget;
     }
+
+    List<Transform>GetClosestEnemies(Collider[] enemies)
+    {
+        List<Transform> Targets = new List<Transform>();
+
+        for (int i = 0; i < MaxTargets; i++)
+        {
+            Transform bestTarget = null;
+            float closestDistanceSqr = Mathf.Infinity;
+            Vector3 currentPosition = transform.position;
+            foreach (Collider potentialTarget in enemies)
+            {
+                Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
+                float dSqrToTarget = directionToTarget.sqrMagnitude;
+                if ((dSqrToTarget < closestDistanceSqr) && !Targets.Contains(potentialTarget.transform)&& IsVisible(Camera, potentialTarget.gameObject))
+                {
+                    closestDistanceSqr = dSqrToTarget;
+                    bestTarget = potentialTarget.transform;
+                }
+            }
+            Targets.Add(bestTarget);
+        }
+        return Targets;
+    }
+    private void ValidateIndicators(List<Transform> Targets)
+    {     
+        for (int i = 0; i < Targets.Count; i++)
+        {
+            //  Debug.Log(Targets.Count);
+            if (Targets[i] != null)
+            {
+                TargetIndicators[i].SetActive(true);
+                TargetIndicators[i].GetComponent<RectTransform>().anchoredPosition =
+                   TargetingSystemUISize * new Vector2((Camera.WorldToViewportPoint(Targets[i].position).x - 0.5f) * 320.0f,
+                    (Camera.WorldToViewportPoint(Targets[i].position).y - 0.5f) * 180.0f);
+            }
+            else TargetIndicators[i].SetActive(false);
+        }
+    }
     void TryTarget(Transform T)
     {
         Tracking = (IsVisible(Camera, T.gameObject));
@@ -97,7 +155,7 @@ public class MissileSystem : MonoBehaviour
 
         TargetIndicator.GetComponent<RectTransform>().anchoredPosition =
                TargetingSystemUISize* new Vector2((Camera.WorldToViewportPoint(T.position).x - 0.5f) * 320.0f,
-                (Camera.WorldToViewportPoint(T.position).y - 0.5f) * 180.0f); ;
+                (Camera.WorldToViewportPoint(T.position).y - 0.5f) * 180.0f); 
 
     }
     private bool IsVisible(Camera c, GameObject target)

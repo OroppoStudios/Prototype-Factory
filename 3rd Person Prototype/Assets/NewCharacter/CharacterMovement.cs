@@ -71,7 +71,7 @@ public class CharacterMovement : MonoBehaviour
     {
         //if (InAir)
         //    return;
-
+      
         //use this if you dont want to be able to control while in air
         //&&GetIfGrounded()
         if (GroundMode && !InAir)
@@ -192,7 +192,6 @@ public class CharacterMovement : MonoBehaviour
         float i = 0.01f;
         while (i<DashDecceleration)
         {
-            Debug.Log(i/DashDecceleration );
             CurrentTopSpeed = BaseSpeed+(DashSpeed-BaseSpeed)*(1- i / DashDecceleration);
             i += 0.01f;
             yield return new WaitForSeconds(0.01f);
