@@ -17,6 +17,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 3)] public float DashDecceleration = 1;
     [Range(0, 150)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
+    [Range(50, 150)] public float GroundPoundSpeed = 100;
     [Range(0, 100)] public float FlyingSpeed = 50;
     [Range(0, 1)] public float AirControlReduction = 1;
     [Header("Player Timers" + "\n")]
@@ -47,6 +48,10 @@ public class CharacterMovement : MonoBehaviour
     private bool AwaitReset = false;
     [HideInInspector] public bool IsBoosting = false;
     [HideInInspector] public int BoostLevel = 0;
+    
+    public DeveloperConsoleBehaviour Console;
+
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -69,9 +74,12 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Developer Console
+        if (Input.GetKeyDown(KeyCode.Return))
+            Console.OnToggle();
         //if (InAir)
         //    return;
-      
+
         //use this if you dont want to be able to control while in air
         //&&GetIfGrounded()
         if (GroundMode && !InAir)
@@ -156,9 +164,15 @@ public class CharacterMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
             StartDash();
 
+        //GroundPound
+        if (Input.GetKeyDown(KeyCode.Q))
+            StartGroundPound();
+
         //fly
         if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
             GroundMode = false;
+
+
     }
     public bool GetIfGrounded()
     {
@@ -170,6 +184,18 @@ public class CharacterMovement : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(Dash());
         SonicBoom_VFX.Play();
+    }
+    private void StartGroundPound()
+    {
+        //this is so that other speed boosts do not stop the pound short and reset its trajectory
+        StopAllCoroutines();
+        StartCoroutine(GroundPound());
+        SonicBoom_VFX.Play();
+    }
+    private IEnumerator GroundPound()
+    {
+        Debug.Log("Doing Ground Pound");
+        yield return null;
     }
     private IEnumerator Dash()
     {  

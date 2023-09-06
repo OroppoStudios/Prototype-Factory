@@ -1461,9 +1461,124 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 585685334763637879, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 585685334763637879, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 585685334763637880, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 163123709}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ProcessCommand
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: DeveloperConsoleBehaviour, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719309479518898095, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792529553001512148, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OverrideSorting
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792529553001512148, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.7294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4004159068103829411, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Maskable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5308738928872945203, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426490123648329533, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187317491955240985, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187317491955240985, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8011378813092029119, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466446505074895181, guid: 1388ddc024576d94da324918d8c02ff2,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1480,6 +1595,18 @@ Rigidbody:
     type: 3}
   m_PrefabInstance: {fileID: 163123702}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &163123709 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4738672896677037854, guid: 1388ddc024576d94da324918d8c02ff2,
+    type: 3}
+  m_PrefabInstance: {fileID: 163123702}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4fbb6dff9a32bf4289ca898819e23d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &176533494
 GameObject:
   m_ObjectHideFlags: 0
@@ -10289,7 +10416,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh63282
+  m_Name: pb_Mesh32500
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -15536,7 +15663,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-22222
+  m_Name: pb_Mesh-1826
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

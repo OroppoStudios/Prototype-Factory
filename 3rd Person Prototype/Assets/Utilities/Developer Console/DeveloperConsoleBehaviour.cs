@@ -59,6 +59,24 @@ public class DeveloperConsoleBehaviour : MonoBehaviour
             inputField.ActivateInputField();
         }
     }
+    public void OnToggle( )
+    {
+        if (!Input.GetKeyDown(KeyCode.Return) )
+            return;
+
+        if (uiCanvas.activeSelf)
+        {
+            Time.timeScale = pausedTimeScale;
+            uiCanvas.SetActive(false);
+        }
+        else
+        {
+            pausedTimeScale = Time.timeScale;
+            Time.timeScale = 0;
+            uiCanvas.SetActive(true);
+            inputField.ActivateInputField();
+        }
+    }
 
     public void ProcessCommand(string inputValue)
     {

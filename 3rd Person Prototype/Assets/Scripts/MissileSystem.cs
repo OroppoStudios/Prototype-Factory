@@ -59,7 +59,6 @@ public class MissileSystem : MonoBehaviour
         Targets.Clear();
         Targets.TrimExcess();
         Targets = GetClosestEnemies(colls);
-        Debug.Log(Targets.Count);
         if (Targets[0])
             ValidateIndicators(Targets);
         else for (int i = 0; i < MaxTargets; i++)

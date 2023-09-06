@@ -4,16 +4,15 @@ using UnityEngine;
 using System;
 using FMOD.Studio;
 
-
-public sealed class SoundManager
+public sealed class AudioManager
 {
     // replace with #unityevents later
     public event EventHandler ManagerInitialized;
     public event EventHandler ManagerRemoved;
     public event EventHandler ManagerLoaded;
 
-    private static SoundManager _instance;
-    public static SoundManager instance
+    private static AudioManager _instance;
+    public static AudioManager instance
     {
         get
         {
@@ -22,14 +21,14 @@ public sealed class SoundManager
         set
         {
             if (_instance == null)
-                _instance = new SoundManager();
+                _instance = new AudioManager();
             else
-                Debug.LogWarning("SoundManager has already been initialized please use the master Manager instead.");
+                Debug.LogWarning("SoundManager has already been initialized please use the Master Manager instead.");
             _instance.OnManagerInitialized();
         }      
     }
 
-    ~SoundManager()
+    ~AudioManager()
     {
         OnManagerRemoved();
     }
@@ -99,8 +98,7 @@ public sealed class SoundManager
 
     public void SetParameter(EventInstance audioEvent, string parameterName, float value)
     {
-        audioEvent.setParameterByName(parameterName, value);
-        
+        audioEvent.setParameterByName(parameterName, value);      
     }
 
     public void SetParameter(EventInstance audioEvent, PARAMETER_ID ID, float value)
