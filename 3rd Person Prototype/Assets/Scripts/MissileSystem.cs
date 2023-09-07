@@ -73,13 +73,11 @@ public class MissileSystem : MonoBehaviour
         Targets.Clear();
         Targets.TrimExcess();
         Targets = GetClosestEnemies(colls);
-<<<<<<< Updated upstream
-=======
 
         ValidateTargetLockOn(Temps, Targets);
        
 
->>>>>>> Stashed changes
+
         if (Targets[0])
             ValidateIndicators(Targets);
         else for (int i = 0; i < MaxTargets; i++)
@@ -87,12 +85,9 @@ public class MissileSystem : MonoBehaviour
     }
     private void Awake()
     {
-        TargetIndicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
-        TargetIndicator.GetComponent<TargetingIcon>().MissileSystem = this;
         foreach (GameObject Indicator in TargetIndicators)
         {
             Indicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
-            Indicator.GetComponent<TargetingIcon>().MissileSystem = this;
         }
     }
     private void OnDrawGizmosSelected()
@@ -121,7 +116,7 @@ public class MissileSystem : MonoBehaviour
       Projectile.transform.parent = null;
       Projectile.transform.Rotate(Vector3.up * -90);
       Projectile.GetComponent<Missle>().Target = Targets[BestTargetnum];
-      Projectile.GetComponent<Missle>().Tracking = LockedOn;
+      Projectile.GetComponent<Missle>().Tracking = TargetIndicators[BestTargetnum].GetComponent<TargetingIcon>().Locked;
       Projectile.GetComponent<Missle>().Speed = MissleSpeed;
        // // use this to shoot all targets that the system is currently locked on to 
 
@@ -177,9 +172,9 @@ public class MissileSystem : MonoBehaviour
                 LowestNUM = NumLockedOnMissles[i];
                 Index = i;
             }
-                Debug.Log(NumLockedOnMissles[i] + "Locked onto " + i);
+                Debug.Log(NumLockedOnMissles[i] + " Locked onto " + i);
         }
-        Debug.Log("Index "+ Index+" Is Best with "+LowestNUM + "Locked Onto Target " );
+        Debug.Log("Index "+ Index+" Is Best with "+LowestNUM + " Locked Onto Target " );
         return Index; 
     }
     List<Transform>GetClosestEnemies(Collider[] enemies)
