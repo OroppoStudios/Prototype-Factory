@@ -16,7 +16,6 @@ public class TargetingIcon : MonoBehaviour
     }
     private void OnDisable()
     {
-        Debug.Log("not Locked in");
         MissileSystem.LockedOn = false;
         StopAllCoroutines();
     }
@@ -24,7 +23,6 @@ public class TargetingIcon : MonoBehaviour
     {
         GetComponent<RawImage>().color = Color.red;
         yield return LockOnWait;
-        Debug.Log("Locked in");
         MissileSystem.LockedOn = true;
         GetComponent<RawImage>().color = Color.green;
     }

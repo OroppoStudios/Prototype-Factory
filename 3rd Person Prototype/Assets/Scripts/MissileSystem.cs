@@ -1,8 +1,19 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using NaughtyAttributes;
+public struct ActiveMissle
+{
+    public ActiveMissle(Transform T, int num)
+    {
+        MissleTransform = T;
+        TargetNum = num;
+    }
+    public Transform MissleTransform;
+    public int TargetNum;
+}
 public class MissileSystem : MonoBehaviour
 {
    
@@ -31,7 +42,8 @@ public class MissileSystem : MonoBehaviour
     [BoxGroup("Touch These ")] [Range(0, 3)] public float LockOnTime = 1;
     [BoxGroup("Touch These ")][Range(0, 5)] public int MaxTargets = 1;
     [BoxGroup("Touch These ")] [Range(1, 300)] public float MissleSpeed = 25;
-
+    
+    public List<ActiveMissle> ActiveMissles= new List<ActiveMissle>();
   
     private void OnValidate()
     {
@@ -54,25 +66,24 @@ public class MissileSystem : MonoBehaviour
        //else TargetIndicator.SetActive(false);
        //
         if (Input.GetKeyDown(KeyCode.Mouse0))
-            Shoot();
+            ShootMissles();
+
+        List<Transform> Temps = new List<Transform>(Targets);
        
         Targets.Clear();
         Targets.TrimExcess();
         Targets = GetClosestEnemies(colls);
+<<<<<<< Updated upstream
+=======
+
+        ValidateTargetLockOn(Temps, Targets);
+       
+
+>>>>>>> Stashed changes
         if (Targets[0])
             ValidateIndicators(Targets);
         else for (int i = 0; i < MaxTargets; i++)
                TargetIndicators[i].SetActive((Targets[i]!=null) ? true : false);       
-    }
-    
-    private void Shoot()
-    {
-        GameObject Projectile = Instantiate(MissilePrefab,transform.position,Camera.transform.rotation);
-        Projectile.transform.parent = null;
-        Projectile.transform.Rotate(Vector3.up * -90);
-        Projectile.GetComponent<Missle>().Target = Target;
-        Projectile.GetComponent<Missle>().Tracking = LockedOn;
-        Projectile.GetComponent<Missle>().Speed = MissleSpeed;
     }
     private void Awake()
     {
@@ -89,25 +100,88 @@ public class MissileSystem : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, MissileSeekRange);
     }
-    Transform GetClosestEnemy(Collider[] enemies)
+    private void Shoot()
     {
-        Transform bestTarget = null;
-        float closestDistanceSqr = Mathf.Infinity;
-        Vector3 currentPosition = transform.position;
-        foreach (Collider potentialTarget in enemies)
-        {
-            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
-            float dSqrToTarget = directionToTarget.sqrMagnitude;
-            if (dSqrToTarget < closestDistanceSqr)
-            {
-                closestDistanceSqr = dSqrToTarget;
-                bestTarget = potentialTarget.transform;
-            }
-        }
+        GameObject Projectile = Instantiate(MissilePrefab,transform.position,Camera.transform.rotation);
+        Projectile.transform.parent = null;
+        Projectile.transform.Rotate(Vector3.up * -90);
+        Projectile.GetComponent<Missle>().Target = Target;
+        Projectile.GetComponent<Missle>().Tracking = LockedOn;
+        Projectile.GetComponent<Missle>().Speed = MissleSpeed;
+    }
+    private void ShootMissles()
+    {   
+      GameObject Projectile = Instantiate(MissilePrefab,transform.position,Camera.transform.rotation);
+      int BestTargetnum = ValidateBestTarget();
+      ActiveMissle Missle = new ActiveMissle(Projectile.transform, BestTargetnum);
+      ActiveMissles.Add(Missle);
+      Projectile.GetComponent<Missle>().OnMissleHit += HandleMissleHit;
 
-        return bestTarget;
+      
+      Projectile.transform.parent = null;
+      Projectile.transform.Rotate(Vector3.up * -90);
+      Projectile.GetComponent<Missle>().Target = Targets[BestTargetnum];
+      Projectile.GetComponent<Missle>().Tracking = LockedOn;
+      Projectile.GetComponent<Missle>().Speed = MissleSpeed;
+       // // use this to shoot all targets that the system is currently locked on to 
+
+    }
+    private void HandleMissleHit(Transform T)
+    {
+     
+        foreach (ActiveMissle Missle in ActiveMissles)
+        {
+          //  Debug.Log((T==Missle.MissleTransform) ? true : false);
+            if (T == Missle.MissleTransform)
+            {             
+                ActiveMissles.Remove(Missle);
+                ActiveMissles.TrimExcess();
+                Destroy(T.gameObject);
+                break;
+            }       
+        }
+       // Debug.Log(T.name + " was Destroyed");
+    }
+    private void ValidateTargetLockOn(List<Transform> Current, List<Transform> Prevoius)
+    {
+        //check if the targets are the same as the ones in the previous frame
+        int i = 0;
+        foreach (Transform T in Current)
+        {
+            bool IsDifferentLockOn = ((Current[i] == Prevoius[i]) ? true : false);
+            TargetIndicators[i].SetActive(IsDifferentLockOn);
+            i++;
+        }
     }
 
+    private int ValidateBestTarget()
+    {
+        List<int> NumLockedOnMissles = new List<int>();
+        for (int i = 0; i <MaxTargets; i++)
+            NumLockedOnMissles.Add(0);
+        
+        foreach (ActiveMissle M in ActiveMissles)
+        {
+            Debug.Log(M.TargetNum +" TargetNum");
+            Debug.Log(NumLockedOnMissles.Count+" TotalTargets");
+            NumLockedOnMissles[M.TargetNum]++;
+          
+        }
+        int LowestNUM = 99,Index=0;
+        for (int i=0;i<NumLockedOnMissles.Count; i++)
+        {
+           // LowestNUM = (NumLockedOnMissles[i] < LowestNUM) ? NumLockedOnMissles[i] : LowestNUM;
+            //Index = (NumLockedOnMissles[i] < LowestNUM) ? i : Index;
+            if((NumLockedOnMissles[i] < LowestNUM))
+            {
+                LowestNUM = NumLockedOnMissles[i];
+                Index = i;
+            }
+                Debug.Log(NumLockedOnMissles[i] + "Locked onto " + i);
+        }
+        Debug.Log("Index "+ Index+" Is Best with "+LowestNUM + "Locked Onto Target " );
+        return Index; 
+    }
     List<Transform>GetClosestEnemies(Collider[] enemies)
     {
         List<Transform> Targets = new List<Transform>();
@@ -145,6 +219,25 @@ public class MissileSystem : MonoBehaviour
             }
             else TargetIndicators[i].SetActive(false);
         }
+    }
+    Transform GetClosestEnemy(Collider[] enemies)
+    {
+        //legacy
+        Transform bestTarget = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+        foreach (Collider potentialTarget in enemies)
+        {
+            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                bestTarget = potentialTarget.transform;
+            }
+        }
+
+        return bestTarget;
     }
     void TryTarget(Transform T)
     {
