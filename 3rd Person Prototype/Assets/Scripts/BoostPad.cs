@@ -6,7 +6,7 @@ public class BoostPad : MonoBehaviour
 {
     public Vector2 Direction;
     // Start is called before the first frame update
-
+    private bool UsedCharge = false;
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -16,11 +16,15 @@ public class BoostPad : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent(out CharacterMovement Character))
+        if (!other.TryGetComponent(out CharacterMovement Character)||UsedCharge==true)
             return;
-
+        UsedCharge = true;
         Debug.Log(Character.IsBoosting);
         Character.ActivateBoost(Quaternion.Euler(Direction) * Vector3.forward);
        
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        UsedCharge = false;
     }
 }
