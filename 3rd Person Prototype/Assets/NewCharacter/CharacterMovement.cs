@@ -16,7 +16,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 3)] public float BaseDecceleration = 1;
     [Range(0, 3)] public float DashDecceleration = 1;
     [Range(0, 3)] public float BoostDecceleration = 1;
-    [Range(0, 150)] public float GrappleSpeed = 30;
+    [Range(0, 250)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
     [Range(50, 150)] public float GroundPoundSpeed = 100;
     [Range(0, 300)] public float FlyingSpeed = 50;
@@ -35,9 +35,9 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 2)] public float DistToGround = 1;
     public LayerMask WhatIsGround;
 
-    private Vector3 vecta;
+    private Vector3 vecta, TrackedVelocity = Vector3.zero;
     [Header("Player Other" + "\n")]
-    private float CurrentTopSpeed = 1, SlowCurrentSpeed =0.01f;
+    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed =0.01f;
     private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
     // I added this to prototype extending flight duration mid flight - Kai
     public bool FlyExtended = false;
@@ -163,6 +163,8 @@ public class CharacterMovement : MonoBehaviour
             //  if (RB.velocity.magnitude > 0.5f)
             //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
             //  else RB.velocity = new Vector3(0, Yspeed, 0);
+            if (IsDecellerating==false) TrackedVelocity = RB.velocity;
+
             SlowDown(Yspeed);
             IsDecellerating = true;
         }
@@ -188,11 +190,13 @@ public class CharacterMovement : MonoBehaviour
 
     }
     private void SlowDown(float YVel)
-    {   
-            if (!IsDecellerating||SlowCurrentSpeed> BaseDecceleration) return;
+    {
+        Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
 
-            if (RB.velocity.magnitude > 0.01f)
-                RB.velocity = new Vector3((RB.velocity.x * (1 - SlowCurrentSpeed / BaseDecceleration)), YVel, (RB.velocity.z  *(1 - SlowCurrentSpeed / BaseDecceleration)));
+        if (!IsDecellerating||SlowCurrentSpeed> BaseDecceleration) return;
+
+          if (RB.velocity.magnitude > 1f)
+                RB.velocity = new Vector3((TrackedVelocity.x * (1 - (SlowCurrentSpeed / BaseDecceleration))), YVel, (TrackedVelocity.z  *(1 - (SlowCurrentSpeed / BaseDecceleration))));
             else RB.velocity = new Vector3(0, YVel, 0);
 
             SlowCurrentSpeed += Time.deltaTime;

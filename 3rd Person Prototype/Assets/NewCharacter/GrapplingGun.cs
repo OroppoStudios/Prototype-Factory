@@ -46,6 +46,8 @@ public class GrapplingGun : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(cam.position, cam.forward, out hit, maxDistance, whatIsGrappleable))
         {
+            player.GetComponent<CharacterMovement>().IsDecellerating = false; 
+            player.GetComponent<CharacterMovement>().SlowCurrentSpeed = 0.01f;
             grapplePoint = hit.point;
             joint = player.gameObject.AddComponent<SpringJoint>();
             joint.autoConfigureConnectedAnchor = false;
@@ -83,13 +85,15 @@ public class GrapplingGun : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(cam.position, cam.forward, out hit, maxDistance, whatIsGrappleable))
         {
+            player.GetComponent<CharacterMovement>().IsDecellerating = false;
+            player.GetComponent<CharacterMovement>().SlowCurrentSpeed = 0.01f;
             player.GetComponent<CharacterMovement>().InAir = true;
             Pulling = true;
             grapplePoint = hit.point;
             lr.positionCount = 2;
             currentGrapplePosition = gunTip.position;
             player.GetComponent<CharacterMovement>().RB.useGravity = false;
-         player.GetComponent<CharacterMovement>().RB.velocity=(grapplePoint - player.position).normalized* player.GetComponent<CharacterMovement>().GrappleSpeed;
+         player.GetComponent<CharacterMovement>().RB.velocity=(grapplePoint - player.position).normalized* player.GetComponent<CharacterMovement>().GrappleSpeed/3.6f;
         }
     }
     private void StopPullGrapple()
