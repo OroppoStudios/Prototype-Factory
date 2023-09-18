@@ -20,6 +20,6 @@ public class TimerUI : MonoBehaviour
 
     private void Update()
     {
-        text.text = timerInstance.GetTimer().ToString();
+        text.text = timerInstance.GetTimer().ToString("0.000");
     }
 }

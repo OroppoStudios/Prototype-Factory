@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInputs",
+    "name": "Inputs",
     "maps": [
         {
             "name": "Player",
@@ -55,6 +55,15 @@
                     "type": "PassThrough",
                     "id": "aca9c84e-f636-4564-b59f-76f63329e278",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GroundPound",
+                    "type": "Button",
+                    "id": "8efa594e-4365-4728-96aa-1cc53b78b83f",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -300,6 +309,17 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ffb1032a-0444-458c-b902-246f7f6ef77c",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GroundPound",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

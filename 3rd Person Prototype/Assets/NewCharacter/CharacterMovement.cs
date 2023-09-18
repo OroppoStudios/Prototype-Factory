@@ -72,21 +72,31 @@ public class CharacterMovement : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.enabled = true;
         PlaneModel.gameObject.SetActive(false);
+
+        PlayerInput.Move += RegularMovement;
+        PlayerInput.Jump += Jump;
+        PlayerInput.GroundPound += StartGroundPound;
+    }
+    private void OnDestroy()
+    {
+        PlayerInput.Move -= RegularMovement;
+        PlayerInput.Jump -= Jump;
+        PlayerInput.GroundPound -= StartGroundPound;
     }
     // Update is called once per frame
     void Update()
     {
         //Developer Console
-        if (Input.GetKeyDown(KeyCode.Return))
-            Console.OnToggle();
+      // if (Input.GetKeyDown(KeyCode.Return))
+      //     Console.OnToggle();
         //if (InAir)
         //    return;
 
         //use this if you dont want to be able to control while in air
         //&&GetIfGrounded()
-        if (GroundMode && !InAir)
-            DoGroundMode();
-        else if (!GroundMode) DoFlyMode();
+     //if (GroundMode && !InAir)
+     //    DoGroundMode();
+     // else if (!GroundMode) DoFlyMode();
 
         if (AwaitReset && GetIfGrounded())
         {
@@ -124,46 +134,35 @@ public class CharacterMovement : MonoBehaviour
             FlyExtended = false;
         }
     }
-    private void DoGroundMode()
+    private void RegularMovement(Vector2 InputVec)
     {
+     
         Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
-        Vec += transform.rotation * Vector3.right * Input.GetAxisRaw("Horizontal");
-        Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
+        Vec += transform.rotation * Vector3.right * InputVec.x;
+        Vec += transform.rotation * Vector3.forward * InputVec.y;
 
         //reduce control in air
         if (!GetIfGrounded())
             Vec *= (1 - AirControlReduction);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-            RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
-            StartDash();
-
-        //GroundPound
-        if (Input.GetKeyDown(KeyCode.Q))
-            StartGroundPound();
-
-        //fly
-        if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
-            GroundMode = false;
-
-        vecta = Vec;
         float Yspeed = RB.velocity.y;
 
         if (!((Physics.Raycast(transform.position, transform.rotation * Vector3.forward, 1, WhatIsGround) && !GetIfGrounded())))
         {
-            RB.velocity += Vec * BaseAcceleration / 2;
-            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-        }
 
-        //drag 
-        if (Input.GetAxis("Horizontal") == 0.0f && Input.GetAxis("Vertical") == 0.0f)
+        Debug.Log(Vec);
+        RB.velocity = Vec * CurrentTopSpeed;
+        RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+       }
+
+        if (InputVec ==Vector2.zero)
         {
-            //  if (RB.velocity.magnitude > 0.5f)
-            //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
-            //  else RB.velocity = new Vector3(0, Yspeed, 0);
-            if (IsDecellerating==false) TrackedVelocity = RB.velocity;
+            if (RB.velocity.magnitude > 0.5f)
+                RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
+            else RB.velocity = new Vector3(0, Yspeed, 0);
+
+
+            if (IsDecellerating == false) TrackedVelocity = RB.velocity;
 
             SlowDown(Yspeed);
             IsDecellerating = true;
@@ -174,10 +173,8 @@ public class CharacterMovement : MonoBehaviour
             SlowCurrentSpeed = 0.01f;
         }
 
-        // else if 
-        //     RB.velocity += transform.rotation * Vector3.back;
 
-        //speed cap
+
         if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
         {
             //RB.velocity = RB.velocity.normalized * Speed;
@@ -185,8 +182,83 @@ public class CharacterMovement : MonoBehaviour
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
-      
+
+
+
         TerminalVelocityCalc();
+    }
+    private void Jump()
+    {
+        RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
+    }
+    private void DoGroundMode()
+    {
+        Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
+     //  Vec += transform.rotation * Vector3.right * Input.GetAxisRaw("Horizontal");
+     //  Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
+
+        //reduce control in air
+        if (!GetIfGrounded())
+            Vec *= (1 - AirControlReduction);
+
+       //if (Input.GetKeyDown(KeyCode.Space))
+       //    RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
+       //
+       //if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
+       //    StartDash();
+       //
+       ////GroundPound
+       //if (Input.GetKeyDown(KeyCode.Q))
+       //    StartGroundPound();
+       //
+       ////fly
+       //if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
+       //    GroundMode = false;
+
+        vecta = Vec;
+        float Yspeed = RB.velocity.y;
+
+        if (!((Physics.Raycast(transform.position, transform.rotation * Vector3.forward, 1, WhatIsGround) && !GetIfGrounded())))
+        {
+            RB.velocity += Vec * BaseAcceleration / 2;
+            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+        }
+
+
+        //drag 
+      // if (Input.GetAxis("Horizontal") == 0.0f && Input.GetAxis("Vertical") == 0.0f)
+      // {
+      //     //  if (RB.velocity.magnitude > 0.5f)
+      //     //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
+      //     //  else RB.velocity = new Vector3(0, Yspeed, 0);
+      //     if (IsDecellerating==false) TrackedVelocity = RB.velocity;
+      //
+      //     SlowDown(Yspeed);
+      //     IsDecellerating = true;
+      // }
+      // else
+      // {
+      //     IsDecellerating = false;
+      //     SlowCurrentSpeed = 0.01f;
+      // }
+
+      // else if 
+      //     RB.velocity += transform.rotation * Vector3.back;
+
+        //speed cap
+        if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
+        {
+            //RB.velocity = RB.velocity.normalized * Speed;
+
+            RB.velocity += new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
+            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+        }
+      
+       
+
+    }
+    private void SpeedUp()
+    {
 
     }
     private void SlowDown(float YVel)
