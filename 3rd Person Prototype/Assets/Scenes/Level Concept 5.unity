@@ -34826,9 +34826,49 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 683466936, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -160
+      objectReference: {fileID: 0}
+    - target: {fileID: 683466936, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 725290189, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 725290189, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 989880047, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: field of view
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084294398, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084294398, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511141613, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -160
+      objectReference: {fileID: 0}
+    - target: {fileID: 1511141613, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 2049681497, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
       propertyPath: MaxTargets
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2049681497, guid: 1388ddc024576d94da324918d8c02ff2, type: 3}
+      propertyPath: TargetingSystemUISize
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 585685334076824750, guid: 1388ddc024576d94da324918d8c02ff2,
         type: 3}
@@ -87922,6 +87962,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 679215791}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2049681499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049681490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81fcebaa064e7dc41a1f3317d67630c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &2089189848
 Mesh:
   m_ObjectHideFlags: 0

@@ -191,7 +191,7 @@ public class CharacterMovement : MonoBehaviour
     }
     private void SlowDown(float YVel)
     {
-        Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
+       // Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
 
         if (!IsDecellerating||SlowCurrentSpeed> BaseDecceleration) return;
 
