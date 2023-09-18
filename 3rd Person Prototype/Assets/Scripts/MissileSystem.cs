@@ -85,10 +85,15 @@ public class MissileSystem : MonoBehaviour
     }
     private void Awake()
     {
+        PlayerInput.Fire += ShootMissles;
         foreach (GameObject Indicator in TargetIndicators)
         {
             Indicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
         }
+    }
+    private void OnDestroy()
+    {
+        PlayerInput.Fire -= ShootMissles;
     }
     private void OnDrawGizmosSelected()
     {

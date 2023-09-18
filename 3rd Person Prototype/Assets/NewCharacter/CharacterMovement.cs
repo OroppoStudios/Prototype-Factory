@@ -76,12 +76,15 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.Move += RegularMovement;
         PlayerInput.Jump += Jump;
         PlayerInput.GroundPound += StartGroundPound;
+        PlayerInput.Dash += StartDash;
+        
     }
     private void OnDestroy()
     {
         PlayerInput.Move -= RegularMovement;
         PlayerInput.Jump -= Jump;
         PlayerInput.GroundPound -= StartGroundPound;
+        PlayerInput.Dash -= StartDash;
     }
     // Update is called once per frame
     void Update()
@@ -147,20 +150,18 @@ public class CharacterMovement : MonoBehaviour
 
         float Yspeed = RB.velocity.y;
 
-        if (!((Physics.Raycast(transform.position, transform.rotation * Vector3.forward, 1, WhatIsGround) && !GetIfGrounded())))
-        {
+       
 
-        Debug.Log(Vec);
-        RB.velocity = Vec * CurrentTopSpeed;
+        RB.velocity += Vec *(BaseAcceleration) ;
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-       }
+       
 
-        if (InputVec ==Vector2.zero)
+        if (InputVec == Vector2.zero)
         {
-            if (RB.velocity.magnitude > 0.5f)
-                RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
-            else RB.velocity = new Vector3(0, Yspeed, 0);
-
+         //  if (RB.velocity.magnitude > 0.5f)
+         //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
+         //  else RB.velocity = new Vector3(0, Yspeed, 0);
+         //
 
             if (IsDecellerating == false) TrackedVelocity = RB.velocity;
 
@@ -189,6 +190,7 @@ public class CharacterMovement : MonoBehaviour
     }
     private void Jump()
     {
+        Debug.Log("jump "+ Convert.ToInt32(GetIfGrounded()));
         RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
     }
     private void DoGroundMode()
@@ -267,7 +269,7 @@ public class CharacterMovement : MonoBehaviour
 
         if (!IsDecellerating||SlowCurrentSpeed> BaseDecceleration) return;
 
-          if (RB.velocity.magnitude > 1f)
+          if (RB.velocity.magnitude > 2f)
                 RB.velocity = new Vector3((TrackedVelocity.x * (1 - (SlowCurrentSpeed / BaseDecceleration))), YVel, (TrackedVelocity.z  *(1 - (SlowCurrentSpeed / BaseDecceleration))));
             else RB.velocity = new Vector3(0, YVel, 0);
 
