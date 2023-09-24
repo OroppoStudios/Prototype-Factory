@@ -29,7 +29,7 @@ namespace FIMSpace.FTools
     #region Inspector window draw
 
 #if UNITY_EDITOR
-    [CanEditMultipleObjects, CustomEditor(typeof(FAnimationClipsPack))]
+    [CanEditMultipleObjects, UnityEditor.CustomEditor(typeof(FAnimationClipsPack))]
     public class FAnimationClipsPackEditor : FContainerBaseEditor
     {
         public FAnimationClipsPack Get { get { if (_get == null) _get = (FAnimationClipsPack)target; return _get; } }
