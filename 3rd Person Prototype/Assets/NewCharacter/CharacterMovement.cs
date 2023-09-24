@@ -37,7 +37,7 @@ public class CharacterMovement : MonoBehaviour
 
     private Vector3 vecta, TrackedVelocity = Vector3.zero;
     [Header("Player Other" + "\n")]
-    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed =0.01f;
+    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed = 0.01f;
     private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
     // I added this to prototype extending flight duration mid flight - Kai
     public bool FlyExtended = false;
@@ -48,12 +48,12 @@ public class CharacterMovement : MonoBehaviour
     public VisualEffect SonicBoom_VFX;
     private MeshRenderer meshRenderer;
     private bool AwaitReset = false;
-    [HideInInspector] public bool IsBoosting = false, IsDecellerating=false;
+    [HideInInspector] public bool IsBoosting = false, IsDecellerating = false;
     [HideInInspector] public int BoostLevel = 0;
 
     public DeveloperConsoleBehaviour Console;
 
-
+    public MovementState PlayersState;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
@@ -63,7 +63,8 @@ public class CharacterMovement : MonoBehaviour
     }
     private void Awake()
     {
-
+        PlayersState = new MovementState(this);
+        PlayersState.ChangeState(MoveState.Grounded);
         RB = GetComponent<Rigidbody>();
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
@@ -73,11 +74,12 @@ public class CharacterMovement : MonoBehaviour
         meshRenderer.enabled = true;
         PlaneModel.gameObject.SetActive(false);
 
-        PlayerInput.Move += RegularMovement;
         PlayerInput.Jump += Jump;
         PlayerInput.GroundPound += StartGroundPound;
         PlayerInput.Dash += StartDash;
-        
+        PlayerInput.FlyMode += StartFly;
+
+
     }
     private void OnDestroy()
     {
@@ -85,21 +87,22 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.Jump -= Jump;
         PlayerInput.GroundPound -= StartGroundPound;
         PlayerInput.Dash -= StartDash;
+        PlayerInput.FlyMode -= StartFly;
     }
     // Update is called once per frame
     void Update()
     {
         //Developer Console
-      // if (Input.GetKeyDown(KeyCode.Return))
-      //     Console.OnToggle();
+        // if (Input.GetKeyDown(KeyCode.Return))
+        //     Console.OnToggle();
         //if (InAir)
         //    return;
 
         //use this if you dont want to be able to control while in air
         //&&GetIfGrounded()
-     //if (GroundMode && !InAir)
-     //    DoGroundMode();
-     // else if (!GroundMode) DoFlyMode();
+        //if (GroundMode && !InAir)
+        //    DoGroundMode();
+        // else if (!GroundMode) DoFlyMode();
 
         if (AwaitReset && GetIfGrounded())
         {
@@ -112,34 +115,14 @@ public class CharacterMovement : MonoBehaviour
 
 
         //dash
-       
+
     }
 
-    private void DoFlyMode()
+
+    #region BasicMovement
+    public void RegularMovement(Vector2 InputVec)
     {
-        //enable plane model, disable player model
-        meshRenderer.enabled = false;
-        PlaneModel.gameObject.SetActive(true);
-        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x, 0, 0);
-        CurrentTopSpeed = FlyingSpeed ;
-        RB.velocity = transform.GetChild(0).rotation * Vector3.forward* CurrentTopSpeed;
 
-        if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
-            RB.velocity = RB.velocity.normalized * CurrentTopSpeed / 3.6f;
-
-        Invoke(nameof(ResetFly), FlyTime);
-
-        // I added this to prototype extending flight duration mid flight - Kai
-        if (FlyExtended == true)
-        {
-            CancelInvoke(nameof(ResetFly));
-            Invoke(nameof(ResetFly), FlyTime);
-            FlyExtended = false;
-        }
-    }
-    private void RegularMovement(Vector2 InputVec)
-    {
-     
         Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
         Vec += transform.rotation * Vector3.right * InputVec.x;
         Vec += transform.rotation * Vector3.forward * InputVec.y;
@@ -150,18 +133,18 @@ public class CharacterMovement : MonoBehaviour
 
         float Yspeed = RB.velocity.y;
 
-       
 
-        RB.velocity += Vec *(BaseAcceleration) ;
+
+        RB.velocity += Vec * (BaseAcceleration);
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-       
+
 
         if (InputVec == Vector2.zero)
         {
-         //  if (RB.velocity.magnitude > 0.5f)
-         //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
-         //  else RB.velocity = new Vector3(0, Yspeed, 0);
-         //
+            //  if (RB.velocity.magnitude > 0.5f)
+            //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
+            //  else RB.velocity = new Vector3(0, Yspeed, 0);
+            //
 
             if (IsDecellerating == false) TrackedVelocity = RB.velocity;
 
@@ -190,90 +173,25 @@ public class CharacterMovement : MonoBehaviour
     }
     private void Jump()
     {
-        Debug.Log("jump "+ Convert.ToInt32(GetIfGrounded()));
+      
         RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
     }
-    private void DoGroundMode()
-    {
-        Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
-     //  Vec += transform.rotation * Vector3.right * Input.GetAxisRaw("Horizontal");
-     //  Vec += transform.rotation * Vector3.forward * Input.GetAxisRaw("Vertical");
 
-        //reduce control in air
-        if (!GetIfGrounded())
-            Vec *= (1 - AirControlReduction);
-
-       //if (Input.GetKeyDown(KeyCode.Space))
-       //    RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
-       //
-       //if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
-       //    StartDash();
-       //
-       ////GroundPound
-       //if (Input.GetKeyDown(KeyCode.Q))
-       //    StartGroundPound();
-       //
-       ////fly
-       //if (FlyCharged && Input.GetKeyDown(KeyCode.LeftControl))
-       //    GroundMode = false;
-
-        vecta = Vec;
-        float Yspeed = RB.velocity.y;
-
-        if (!((Physics.Raycast(transform.position, transform.rotation * Vector3.forward, 1, WhatIsGround) && !GetIfGrounded())))
-        {
-            RB.velocity += Vec * BaseAcceleration / 2;
-            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-        }
-
-
-        //drag 
-      // if (Input.GetAxis("Horizontal") == 0.0f && Input.GetAxis("Vertical") == 0.0f)
-      // {
-      //     //  if (RB.velocity.magnitude > 0.5f)
-      //     //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
-      //     //  else RB.velocity = new Vector3(0, Yspeed, 0);
-      //     if (IsDecellerating==false) TrackedVelocity = RB.velocity;
-      //
-      //     SlowDown(Yspeed);
-      //     IsDecellerating = true;
-      // }
-      // else
-      // {
-      //     IsDecellerating = false;
-      //     SlowCurrentSpeed = 0.01f;
-      // }
-
-      // else if 
-      //     RB.velocity += transform.rotation * Vector3.back;
-
-        //speed cap
-        if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
-        {
-            //RB.velocity = RB.velocity.normalized * Speed;
-
-            RB.velocity += new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
-            RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-        }
-      
-       
-
-    }
     private void SpeedUp()
     {
 
     }
     private void SlowDown(float YVel)
     {
-       // Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
+        // Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
 
-        if (!IsDecellerating||SlowCurrentSpeed> BaseDecceleration) return;
+        if (!IsDecellerating || SlowCurrentSpeed > BaseDecceleration) return;
 
-          if (RB.velocity.magnitude > 2f)
-                RB.velocity = new Vector3((TrackedVelocity.x * (1 - (SlowCurrentSpeed / BaseDecceleration))), YVel, (TrackedVelocity.z  *(1 - (SlowCurrentSpeed / BaseDecceleration))));
-            else RB.velocity = new Vector3(0, YVel, 0);
+        if (RB.velocity.magnitude > 2f)
+            RB.velocity = new Vector3((TrackedVelocity.x * (1 - (SlowCurrentSpeed / BaseDecceleration))), YVel, (TrackedVelocity.z * (1 - (SlowCurrentSpeed / BaseDecceleration))));
+        else RB.velocity = new Vector3(0, YVel, 0);
 
-            SlowCurrentSpeed += Time.deltaTime;
+        SlowCurrentSpeed += Time.deltaTime;
 
         IsDecellerating = false;
         CurrentTopSpeed = BaseSpeed;
@@ -284,6 +202,7 @@ public class CharacterMovement : MonoBehaviour
         RB.velocity = new Vector3(RB.velocity.x, Mathf.Clamp(RB.velocity.y,
             -TerminalVelocity / 3.6f, 500), RB.velocity.z);
     }
+    #endregion BasicMovement
 
     private void StartGroundPound()
     {
@@ -299,9 +218,11 @@ public class CharacterMovement : MonoBehaviour
     }
 
     #region DashAbility
- 
+
     private void StartDash()
     {
+        if (!CanDash)
+            return;
         //this is so that other speed boosts do not stop the dash short and reset its trajectory
         StopAllCoroutines();
         StartCoroutine(Dash());
@@ -347,7 +268,7 @@ public class CharacterMovement : MonoBehaviour
     {
         IsBoosting = true;
         CurrentTopSpeed = Speed;
-        RB.velocity = Direction * CurrentTopSpeed/3.6f;
+        RB.velocity = Direction * CurrentTopSpeed / 3.6f;
         yield return BoostTimer;
         StartCoroutine(BoostSlowDown());
         IsBoosting = false;
@@ -359,7 +280,7 @@ public class CharacterMovement : MonoBehaviour
         float BoostedSpeed = RB.velocity.magnitude;
         while (i < BoostDecceleration)
         {
-            CurrentTopSpeed = (BaseSpeed + (BoostedSpeed*3.6f - BaseSpeed) * (1 - i / BoostDecceleration));
+            CurrentTopSpeed = (BaseSpeed + (BoostedSpeed * 3.6f - BaseSpeed) * (1 - i / BoostDecceleration));
             i += 0.01f;
             yield return new WaitForSeconds(0.01f);
         }
@@ -372,17 +293,46 @@ public class CharacterMovement : MonoBehaviour
         yield return FlyWindow;
         FlyCharged = false;
     }
-   
-   
+
+
     private void ResetFly()
     {
+        PlayersState.ChangeState(MoveState.Grounded);
         meshRenderer.enabled = true;
         PlaneModel.gameObject.SetActive(false);
         CurrentTopSpeed = BaseSpeed;
         GroundMode = true;
     }
-  
-   
+    public void StartFly()
+    {
+        if (!FlyCharged)
+            return;
+
+        PlayersState.ChangeState(MoveState.Flying);
+    }
+    public void FlyMovement(Vector2 InputVec)
+    {
+        //enable plane model, disable player model
+        meshRenderer.enabled = false;
+        PlaneModel.gameObject.SetActive(true);
+        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x, 0, 0);
+        CurrentTopSpeed = FlyingSpeed;
+        RB.velocity = transform.GetChild(0).rotation * Vector3.forward * CurrentTopSpeed;
+
+        if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
+            RB.velocity = RB.velocity.normalized * CurrentTopSpeed / 3.6f;
+
+        Invoke(nameof(ResetFly), FlyTime);
+
+        // I added this to prototype extending flight duration mid flight - Kai
+        if (FlyExtended == true)
+        {
+            CancelInvoke(nameof(ResetFly));
+            Invoke(nameof(ResetFly), FlyTime);
+            FlyExtended = false;
+        }
+    }
+
     public void ActivateCharge()
     {
         StartCoroutine(FlyCharge());
