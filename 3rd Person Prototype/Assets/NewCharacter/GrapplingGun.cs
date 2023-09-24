@@ -20,15 +20,15 @@ public class GrapplingGun : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(2))
-            StartGrapple();       
-        else if (Input.GetMouseButtonUp(2))
-            StopGrapple();
-
-        if (Input.GetMouseButtonDown(1))
-            StartPullGrapple();
-        else if (Input.GetMouseButtonUp(1))
-            StopPullGrapple();
+     // if (Input.GetMouseButtonDown(2))
+     //     StartGrapple();       
+     // else if (Input.GetMouseButtonUp(2))
+     //     StopGrapple();
+     //
+     // if (Input.GetMouseButtonDown(1))
+     //     StartPullGrapple();
+     // else if (Input.GetMouseButtonUp(1))
+     //     StopPullGrapple();
 
     }
 

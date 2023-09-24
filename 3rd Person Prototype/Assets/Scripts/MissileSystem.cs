@@ -65,8 +65,8 @@ public class MissileSystem : MonoBehaviour
        //    TryTarget(Target);
        //else TargetIndicator.SetActive(false);
        //
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-            ShootMissles();
+        //if (Input.GetKeyDown(KeyCode.Mouse0))
+        //    ShootMissles();
 
         List<Transform> Temps = new List<Transform>(Targets);
        
@@ -85,10 +85,15 @@ public class MissileSystem : MonoBehaviour
     }
     private void Awake()
     {
+        PlayerInput.Fire += ShootMissles;
         foreach (GameObject Indicator in TargetIndicators)
         {
             Indicator.GetComponent<TargetingIcon>().LockOnWait = new WaitForSeconds(LockOnTime);
         }
+    }
+    private void OnDestroy()
+    {
+        PlayerInput.Fire -= ShootMissles;
     }
     private void OnDrawGizmosSelected()
     {
