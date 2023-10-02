@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08802ad9b57d51c409589bf966a34bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissileSystem: {fileID: 0}
+  Locked: 0
 --- !u!1 &330470507
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,7 +581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08802ad9b57d51c409589bf966a34bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissileSystem: {fileID: 0}
+  Locked: 0
 --- !u!1 &918197201
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,7 +668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08802ad9b57d51c409589bf966a34bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissileSystem: {fileID: 0}
+  Locked: 0
 --- !u!1 &989880046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08802ad9b57d51c409589bf966a34bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissileSystem: {fileID: 0}
+  Locked: 0
 --- !u!1 &1754541998
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,7 +1733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08802ad9b57d51c409589bf966a34bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissileSystem: {fileID: 0}
+  Locked: 0
 --- !u!1 &585685332945233721
 GameObject:
   m_ObjectHideFlags: 0
@@ -2330,6 +2330,8 @@ GameObject:
   - component: {fileID: 2353172684299127067}
   - component: {fileID: 2049681497}
   - component: {fileID: 4738672896677037854}
+  - component: {fileID: 2049681499}
+  - component: {fileID: 2049681508}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -2448,42 +2450,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e436fd6b77af8464fa2a2aba11250f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseSpeed: 20
+  BaseSpeed: 70
   BaseAcceleration: 1
   BaseDecceleration: 1
   DashDecceleration: 1
+  BoostDecceleration: 1
   GrappleSpeed: 50
-  DashSpeed: 50
-  FlyingSpeed: 50
+  DashSpeed: 125
+  GroundPoundSpeed: 100
+  FlyingSpeed: 150
   AirControlReduction: 0
+  TerminalVelocity: 120
   DashTime: 0.5
   BoostDuration: 1
-  FlyTime: 1.3
+  FlyTime: 1.5
   FlyChargeWindow: 1
   DashResetTime: 1
   BoostPadSpeeds:
-  - 30
-  - 60
-  - 90
   - 120
-  - 120
-  - 120
-  - 120
+  - 150
+  - 180
+  - 210
+  - 240
+  - 270
+  - 300
   JumpHeight: 15
   DistToGround: 1.272
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 512
+  CurrentTopSpeed: 1
+  SlowCurrentSpeed: 0.01
   FlyExtended: 0
   InAir: 0
   FlyCharged: 0
   GroundMode: 1
   Dashing: 0
   CanDash: 1
-  RB: {fileID: 0}
+  RB: {fileID: 585685334076824751}
   PlaneModel: {fileID: 351751795173327932}
   SonicBoom_VFX: {fileID: 9080013992775275776}
   IsBoosting: 0
+  IsDecellerating: 1
   BoostLevel: 0
   Console: {fileID: 4738672896677037854}
 --- !u!114 &2353172684299127067
@@ -2560,6 +2568,49 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd267cf6afe80fe4a9866b4ff56df0fe, type: 2}
   uiCanvas: {fileID: 6426490123648329533}
   inputField: {fileID: 1719309479518898095}
+--- !u!114 &2049681499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585685334076824756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81fcebaa064e7dc41a1f3317d67630c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2049681508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585685334076824756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 1723438d974b67d4297a9e07f05089af,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &585685334763637880
 GameObject:
   m_ObjectHideFlags: 0

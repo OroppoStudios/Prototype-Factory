@@ -321,9 +321,11 @@ public class CharacterMovement : MonoBehaviour
 
         if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
             RB.velocity = RB.velocity.normalized * CurrentTopSpeed / 3.6f;
+        
+        if (FlyCharged)
+            Invoke(nameof(ResetFly), FlyTime);
 
-        Invoke(nameof(ResetFly), FlyTime);
-
+        FlyCharged = false;
         // I added this to prototype extending flight duration mid flight - Kai
         if (FlyExtended == true)
         {

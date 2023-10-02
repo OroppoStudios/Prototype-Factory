@@ -27,7 +27,6 @@ public class PlayerInput : MonoBehaviour
     public void OnJump(InputValue action)
     {
         Jump.Invoke();
-        Debug.Log("skldf");
     }
     public void OnLook(InputValue action)
     {
