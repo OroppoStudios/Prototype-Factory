@@ -64,7 +64,7 @@ public class CharacterMovement : MonoBehaviour
     private void Awake()
     {
         PlayersState = new MovementState(this);
-        PlayersState.ChangeState(MoveState.Grounded);
+        PlayersState.ChangeState(MoveState.Standard);
         RB = GetComponent<Rigidbody>();
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
@@ -197,6 +197,7 @@ public class CharacterMovement : MonoBehaviour
     }
     #endregion BasicMovement
 
+    #region GroundPoundAbility
     private void StartGroundPound()
     {
         //this is so that other speed boosts do not stop the pound short and reset its trajectory
@@ -207,8 +208,15 @@ public class CharacterMovement : MonoBehaviour
     private IEnumerator GroundPound()
     {
         Debug.Log("Doing Ground Pound");
+        PlayersState.ChangeState(MoveState.GroundPounding);
         yield return null;
     }
+    public void GroundPoundMovement(Vector2 vec)
+    {
+        if (GetIfGrounded())
+            PlayersState.ChangeState(MoveState.Standard);
+    }
+    #endregion GroundPoundAbility
 
     #region DashAbility
 
@@ -284,6 +292,8 @@ public class CharacterMovement : MonoBehaviour
         CurrentTopSpeed = BaseSpeed;
     }
     #endregion BoostAbility
+
+    #region FlyAbility
     private IEnumerator FlyCharge()
     {
         FlyCharged = true;
@@ -294,7 +304,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void ResetFly()
     {
-        PlayersState.ChangeState(MoveState.Grounded);
+        PlayersState.ChangeState(MoveState.Standard);
         meshRenderer.enabled = true;
         PlaneModel.gameObject.SetActive(false);
         CurrentTopSpeed = BaseSpeed;
@@ -336,6 +346,8 @@ public class CharacterMovement : MonoBehaviour
     {
         StartCoroutine(FlyCharge());
     }
+
+    #endregion FlyAbility
     public bool GetIfGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround);

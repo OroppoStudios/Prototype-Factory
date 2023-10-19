@@ -12,12 +12,12 @@ public interface IState
 
 public enum MoveState 
 {
-    Grounded, Flying, Grappling, Suspended
+    Standard, GroundPounding, Flying, Grappling, Suspended
 }
-public class GroundedState : IState
+public class StandardState : IState
 {
     CharacterMovement CharacterMovement;
-    public GroundedState (CharacterMovement Character)
+    public StandardState (CharacterMovement Character)
     {
         Debug.Log("entering GroundedState state");
         CharacterMovement = Character;
@@ -39,6 +39,30 @@ public class GroundedState : IState
         
     }
 }
+public class GroundingState : IState
+{
+    CharacterMovement CharacterMovement;
+    public GroundingState(CharacterMovement Character)
+    {
+        CharacterMovement = Character;
+    }
+    public void Enter()
+    {
+        PlayerInput.Move += CharacterMovement.GroundPoundMovement;
+    }
+
+    public void Execute()
+    {
+        Debug.Log("updating Grounded state");
+    }
+
+    public void Exit()
+    {
+        PlayerInput.Move -= CharacterMovement.GroundPoundMovement;
+
+    }
+}
+
 public class FlyingState : IState
 {
     CharacterMovement CharacterMovement;
@@ -112,8 +136,8 @@ public class MovementState
 
         switch (State)
         {
-            case MoveState.Grounded:
-                currentState = new GroundedState(Character);
+            case MoveState.Standard:
+                currentState = new StandardState(Character);
                 break;
             case MoveState.Flying:
                 currentState = new FlyingState(Character);
@@ -124,8 +148,11 @@ public class MovementState
             case MoveState.Suspended:
                 currentState = new SuspendedState();
                 break;
+            case MoveState.GroundPounding:
+                currentState = new GroundingState(Character);
+                break;
             default:
-                currentState = new GroundedState(Character);
+                currentState = new StandardState(Character);
                 break;
         }
      
