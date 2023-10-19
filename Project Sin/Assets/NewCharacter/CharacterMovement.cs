@@ -132,12 +132,8 @@ public class CharacterMovement : MonoBehaviour
             Vec *= (1 - AirControlReduction);
 
         float Yspeed = RB.velocity.y;
-
-
-
         RB.velocity += Vec * (BaseAcceleration);
         RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
-
 
         if (InputVec == Vector2.zero)
         {
@@ -156,9 +152,6 @@ public class CharacterMovement : MonoBehaviour
             IsDecellerating = false;
             SlowCurrentSpeed = 0.01f;
         }
-
-
-
         if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
         {
             //RB.velocity = RB.velocity.normalized * Speed;
@@ -166,9 +159,6 @@ public class CharacterMovement : MonoBehaviour
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
-
-
-
         TerminalVelocityCalc();
     }
     private void Jump()
@@ -185,9 +175,12 @@ public class CharacterMovement : MonoBehaviour
     {
         // Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
 
+        // Debug.Log("try decellerating");
         if (!IsDecellerating || SlowCurrentSpeed > BaseDecceleration) return;
 
-        if (RB.velocity.magnitude > 2f)
+        //  Debug.Log("decellerating");
+
+        if (RB.velocity.magnitude > 3f)
             RB.velocity = new Vector3((TrackedVelocity.x * (1 - (SlowCurrentSpeed / BaseDecceleration))), YVel, (TrackedVelocity.z * (1 - (SlowCurrentSpeed / BaseDecceleration))));
         else RB.velocity = new Vector3(0, YVel, 0);
 
@@ -240,12 +233,16 @@ public class CharacterMovement : MonoBehaviour
         Invoke(nameof(ResetDash), DashResetTime);
         //uncomment the commented parts if you want UD vel to be unaffected by gravity
         //float Yspeed = RB.velocity.y;
-        RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
         if (RB.velocity.magnitude <= 0.1f)
             RB.velocity = transform.rotation * Vector3.forward * CurrentTopSpeed;
+        RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
+        
+        
         //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         yield return DashTimer;
         Dashing = false;
+        IsDecellerating = false;
+        SlowCurrentSpeed = 0.01f;
         StartCoroutine(DashSlowDown());
     }
     private IEnumerator DashSlowDown()
@@ -353,6 +350,8 @@ public class CharacterMovement : MonoBehaviour
 
         if (BoostLevel < BoostPadSpeeds.Count)
             BoostLevel++;
+        IsDecellerating = false;
+        SlowCurrentSpeed = 0.01f;
 
     }
     //private void OnCollisionEnter(Collision collision)
