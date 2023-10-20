@@ -18,7 +18,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 3)] public float BoostDecceleration = 1;
     [Range(0, 250)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
-    [Range(50, 150)] public float GroundPoundSpeed = 100;
+    [Range(50, 200)] public float GroundPoundSpeed = 100;
     [Range(0, 300)] public float FlyingSpeed = 50;
     [Range(0, 1)] public float AirControlReduction = 1;
     [Range(0, 150)] public float TerminalVelocity = 80;
@@ -28,6 +28,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 15)] public float FlyTime = 5;
     [Range(0, 2.5f)] public float FlyChargeWindow = 1f;
     [Range(0, 15)] public float DashResetTime = 5;
+    [Range(0, 10)] public float GroundPoundCooldownTime = 3;
     [Tooltip("Speeds depending on how many pads you hit consecutively")]
     [Range(0, 300)] public List<float> BoostPadSpeeds;
     [Header("Jump Specifics" + "\n")]
@@ -42,7 +43,7 @@ public class CharacterMovement : MonoBehaviour
     // I added this to prototype extending flight duration mid flight - Kai
     public bool FlyExtended = false;
 
-    [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true;
+    [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true, CanGroundPound = true;
     [HideInInspector] public Rigidbody RB;
     public GameObject PlaneModel;
     public VisualEffect SonicBoom_VFX;
@@ -63,6 +64,7 @@ public class CharacterMovement : MonoBehaviour
     }
     private void Awake()
     {
+        CanGroundPound = true;
         PlayersState = new MovementState(this);
         PlayersState.ChangeState(MoveState.Standard);
         RB = GetComponent<Rigidbody>();
@@ -200,21 +202,31 @@ public class CharacterMovement : MonoBehaviour
     #region GroundPoundAbility
     private void StartGroundPound()
     {
+        Debug.Log(CanGroundPound);
+       if (!CanGroundPound)
+           return;
+
+        CanGroundPound = false;
         //this is so that other speed boosts do not stop the pound short and reset its trajectory
         StopAllCoroutines();
-        StartCoroutine(GroundPound());
+        PlayersState.ChangeState(MoveState.GroundPounding);
         SonicBoom_VFX.Play();
     }
-    private IEnumerator GroundPound()
-    {
-        Debug.Log("Doing Ground Pound");
-        PlayersState.ChangeState(MoveState.GroundPounding);
-        yield return null;
-    }
+ 
     public void GroundPoundMovement(Vector2 vec)
     {
+        RB.velocity = transform.rotation * Vector3.down * GroundPoundSpeed;
         if (GetIfGrounded())
+        {
             PlayersState.ChangeState(MoveState.Standard);
+            Invoke(nameof(ResetGroundPound), GroundPoundCooldownTime);
+        }
+          
+    }
+
+    void ResetGroundPound()
+    {
+        CanGroundPound = true; 
     }
     #endregion GroundPoundAbility
 

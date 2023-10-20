@@ -19,7 +19,7 @@ public class StandardState : IState
     CharacterMovement CharacterMovement;
     public StandardState (CharacterMovement Character)
     {
-        Debug.Log("entering GroundedState state");
+        Debug.Log("entering standard state");
         CharacterMovement = Character;
     }
     public void Enter()
@@ -34,7 +34,7 @@ public class StandardState : IState
 
     public void Exit()
     {
-        Debug.Log("exiting GroundedState state");
+        Debug.Log("exiting standard state");
         PlayerInput.Move -= CharacterMovement.RegularMovement;
         
     }
