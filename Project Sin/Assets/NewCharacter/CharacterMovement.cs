@@ -76,6 +76,7 @@ public class CharacterMovement : MonoBehaviour
     public DeveloperConsoleBehaviour Console;
     public MovementState PlayersState;
     private Animator anim;
+    private DustCharge DustCharge;
 
     private int _currentState;
 
@@ -102,6 +103,7 @@ public class CharacterMovement : MonoBehaviour
         RB = GetComponent<Rigidbody>();
         meshRenderer = GetComponent<Renderer>();
         anim = GetComponent<Animator>();
+        DustCharge = GetComponent<DustCharge>();
 
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
@@ -251,7 +253,9 @@ public class CharacterMovement : MonoBehaviour
         Debug.Log(CanGroundPound);
        if (!CanGroundPound)
            return;
-
+       if (!DustCharge.ValidateCharge())
+           return;
+            
         CanGroundPound = false;
         //this is so that other speed boosts do not stop the pound short and reset its trajectory
         StopAllCoroutines();
@@ -281,6 +285,8 @@ public class CharacterMovement : MonoBehaviour
     private void StartDash()
     {
         if (!CanDash)
+            return;
+        if (!DustCharge.ValidateCharge())
             return;
         //this is so that other speed boosts do not stop the dash short and reset its trajectory
         StopAllCoroutines();
@@ -372,7 +378,8 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!FlyCharged)
             return;
-
+        if (!DustCharge.ValidateCharge())
+            return;
         PlayersState.ChangeState(MoveState.Flying);
     }
     public void FlyMovement(Vector2 InputVec)
