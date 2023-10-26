@@ -1369,6 +1369,7 @@ GameObject:
   - component: {fileID: 3019479820674663432}
   - component: {fileID: 3019479820674663433}
   - component: {fileID: 3019479820674663537}
+  - component: {fileID: 1535548238161928706}
   m_Layer: 0
   m_Name: Body+Logic
   m_TagString: Untagged
@@ -1821,6 +1822,20 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00023519993, y: 0.015656807, z: 0.7755921}
     m_Extent: {x: 0.55837667, y: 0.18665805, z: 0.81390655}
   m_DirtyAABB: 0
+--- !u!114 &1535548238161928706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2498521747904945841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 446b8deb6d0876c4c935fdf6c8452b9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DustCharges: 1
+  MaxDustCharges: 3
 --- !u!1 &2500898111660002842
 GameObject:
   m_ObjectHideFlags: 0
