@@ -20,6 +20,8 @@ public class DustCharge : MonoBehaviour
         TopOfBar.GetComponent<RectTransform>().localPosition = new Vector3(0f, BoostBars[MaxDustCharges-1].localPosition.y +20f, 0f);
         else TopOfBar.GetComponent<RectTransform>().localPosition = new Vector3(0f, -25f, 0f);
 
+        AdjustChargeBar();
+
     }
     private void Awake()
     {
@@ -50,6 +52,7 @@ public class DustCharge : MonoBehaviour
 
     private void AdjustChargeBar()
     {
+        DustCharges = (MaxDustCharges < DustCharges) ? MaxDustCharges : DustCharges;
 
         for (int i = 0; i < 5; i++)
             BoostChargedBars[i].gameObject.SetActive(false);
@@ -78,6 +81,6 @@ public class DustCharge : MonoBehaviour
     {
         DustCharges += num;
         DustCharges = (DustCharges > MaxDustCharges) ? MaxDustCharges : DustCharges;
-        AdjustChargeBar();
+         AdjustChargeBar();
     }
 }
