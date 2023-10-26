@@ -119,7 +119,7 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound += StartGroundPound;
         PlayerInput.Dash += StartDash;
         PlayerInput.FlyMode += StartFly;
-
+        PlayerInput.Tether += StartTether;
 
     }
 
@@ -130,6 +130,7 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound -= StartGroundPound;
         PlayerInput.Dash -= StartDash;
         PlayerInput.FlyMode -= StartFly;
+        PlayerInput.Tether -= StartTether;
     }
 
     void Update()
@@ -413,6 +414,19 @@ public class CharacterMovement : MonoBehaviour
     }
 
     #endregion FlyAbility
+
+    #region TetherAbility
+
+    public void StartTether() 
+    {
+        Debug.Log("Tether");
+    }
+
+
+
+    #endregion TetherAbility
+
+
     public bool GetIfGrounded()
     {
         if (Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround)   ) 

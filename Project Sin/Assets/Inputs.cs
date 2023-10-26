@@ -98,6 +98,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Tether"",
+                    ""type"": ""Button"",
+                    ""id"": ""6b3a542b-6100-4d75-b347-854e9c32c0d0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -340,6 +349,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""24e5bf4e-e871-41d2-9d70-c4a3453242a6"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Tether"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -745,6 +765,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Player_GroundPound = m_Player.FindAction("GroundPound", throwIfNotFound: true);
         m_Player_FlyMode = m_Player.FindAction("FlyMode", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+        m_Player_Tether = m_Player.FindAction("Tether", throwIfNotFound: true);
         // Player Flying Mode
         m_PlayerFlyingMode = asset.FindActionMap("Player Flying Mode", throwIfNotFound: true);
         m_PlayerFlyingMode_Thrust = m_PlayerFlyingMode.FindAction("Thrust", throwIfNotFound: true);
@@ -821,6 +842,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_GroundPound;
     private readonly InputAction m_Player_FlyMode;
     private readonly InputAction m_Player_Shoot;
+    private readonly InputAction m_Player_Tether;
     public struct PlayerActions
     {
         private @Inputs m_Wrapper;
@@ -833,6 +855,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @GroundPound => m_Wrapper.m_Player_GroundPound;
         public InputAction @FlyMode => m_Wrapper.m_Player_FlyMode;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+        public InputAction @Tether => m_Wrapper.m_Player_Tether;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -866,6 +889,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @Tether.started += instance.OnTether;
+            @Tether.performed += instance.OnTether;
+            @Tether.canceled += instance.OnTether;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -894,6 +920,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @Tether.started -= instance.OnTether;
+            @Tether.performed -= instance.OnTether;
+            @Tether.canceled -= instance.OnTether;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1035,6 +1064,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnGroundPound(InputAction.CallbackContext context);
         void OnFlyMode(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnTether(InputAction.CallbackContext context);
     }
     public interface IPlayerFlyingModeActions
     {

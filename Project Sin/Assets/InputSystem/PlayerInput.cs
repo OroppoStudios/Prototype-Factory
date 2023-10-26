@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerInput : MonoBehaviour
 {
     Inputs InputActions;
-    public static event Action Jump, Fire, GroundPound, Dash, FlyMode;
+    public static event Action Jump, Fire, GroundPound, Dash, FlyMode,Tether;
     public static event Action<Vector2> Move,Look;
     Vector2 move = Vector2.zero;
     // Start is called before the first frame update
@@ -48,6 +48,10 @@ public class PlayerInput : MonoBehaviour
     public void OnShoot(InputValue action)
     {
         Fire.Invoke();
+    }
+    public void OnTether(InputValue action)
+    {
+        Tether.Invoke();
     }
     void OnEnable()
     {
