@@ -10,6 +10,7 @@ using UnityEngine.VFX;
 
 public class CharacterMovement : MonoBehaviour
 {
+    #region Stats
     [Header("Player Speeds" + "\n")]
     [Range(0, 150)] public float BaseSpeed = 15;
     [Range(0, 5)] public float BaseAcceleration = 1;
@@ -22,6 +23,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 300)] public float FlyingSpeed = 50;
     [Range(0, 1)] public float AirControlReduction = 1;
     [Range(0, 150)] public float TerminalVelocity = 80;
+
     [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
     [Range(0, 3f)] public float BoostDuration = 1f;
@@ -29,97 +31,144 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 2.5f)] public float FlyChargeWindow = 1f;
     [Range(0, 15)] public float DashResetTime = 5;
     [Range(0, 10)] public float GroundPoundCooldownTime = 3;
+
     [Tooltip("Speeds depending on how many pads you hit consecutively")]
     [Range(0, 300)] public List<float> BoostPadSpeeds;
-    [Header("Jump Specifics" + "\n")]
+
+    [Header("Jump Statistics" + "\n")]
     [Range(0, 25)] public float JumpHeight = 15;
     [Range(0, 2)] public float DistToGround = 1;
-    public LayerMask WhatIsGround;
-
-    private Vector3 vecta, TrackedVelocity = Vector3.zero;
-    [Header("Player Other" + "\n")]
-    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed = 0.01f;
-    private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
-    // I added this to prototype extending flight duration mid flight - Kai
-    public bool FlyExtended = false;
-
-    [HideInInspector] public bool InAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true, CanGroundPound = true;
-    [HideInInspector] public Rigidbody RB;
-    public GameObject PlaneModel;
-    public VisualEffect SonicBoom_VFX;
-    private MeshRenderer meshRenderer;
-    private bool AwaitReset = false;
     [HideInInspector] public bool IsBoosting = false, IsDecellerating = false;
     [HideInInspector] public int BoostLevel = 0;
 
-    public DeveloperConsoleBehaviour Console;
+    [Header("Player Other" + "\n")]
+    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed = 0.01f;
+    private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
 
+    // I added this to prototype extending flight duration mid flight - Kai
+    public bool FlyExtended = false;
+    private bool AwaitReset = false;
+    [HideInInspector] public bool playerInAir = false, FlyCharged = false, GroundMode = true, Dashing = false, CanDash = true, CanGroundPound = true, grounded =true;
+    private Vector3 vecta, TrackedVelocity = Vector3.zero;
+    public LayerMask WhatIsGround;
+    private bool _jumpPressed;
+    private bool _landed;
+    private bool _attacked;
+
+    [Header("Animation Timings \n")]
+    [SerializeField]
+    private float _attackAnimTime;
+
+    [SerializeField] 
+    private float _landAnimDuration;
+
+    [SerializeField]
+    private float animLockout = 0.2f;
+
+    #endregion
+
+    #region Cached Values
+    [Header("Cached Values \n")]
+    [HideInInspector] public Rigidbody RB;
+    public GameObject PlaneModel;
+    public VisualEffect SonicBoom_VFX;
+    private Renderer meshRenderer;
+    public DeveloperConsoleBehaviour Console;
     public MovementState PlayersState;
+    private Animator anim;
+
+    private int _currentState;
+
+    private static readonly int Idle = Animator.StringToHash("Idle");
+    private static readonly int Walk = Animator.StringToHash("Walk");
+    private static readonly int Run = Animator.StringToHash("Run");
+    private static readonly int Jump = Animator.StringToHash("Jump");
+    private static readonly int Fall = Animator.StringToHash("Fall");
+    private static readonly int Land = Animator.StringToHash("Land");
+    private static readonly int Attack = Animator.StringToHash("Attack"); //Unimplemented
+    private static readonly int Collect = Animator.StringToHash("Collect"); //Unimplemented
+    private static readonly int GroundPound = Animator.StringToHash("Ground Pound"); //Unimplemented
+    #endregion
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * DistToGround);
-
         Gizmos.DrawLine(transform.position, transform.position + vecta);
     }
+
     private void Awake()
     {
-        CanGroundPound = true;
-        PlayersState = new MovementState(this);
-        PlayersState.ChangeState(MoveState.Standard);
         RB = GetComponent<Rigidbody>();
+        meshRenderer = GetComponent<Renderer>();
+        anim = GetComponent<Animator>();
+
         DashTimer = new WaitForSeconds(DashTime);
         FlyWindow = new WaitForSeconds(FlyChargeWindow);
         BoostTimer = new WaitForSeconds(BoostDuration);
         CurrentTopSpeed = BaseSpeed;
-        meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.enabled = true;
+        CanGroundPound = true;
+        PlayersState = new MovementState(this);
+        PlayersState.ChangeState(MoveState.Standard);
         PlaneModel.gameObject.SetActive(false);
 
-        PlayerInput.Jump += Jump;
+        PlayerInput.Jump += DoJump;
         PlayerInput.GroundPound += StartGroundPound;
         PlayerInput.Dash += StartDash;
         PlayerInput.FlyMode += StartFly;
 
 
     }
+
     private void OnDestroy()
     {
         PlayerInput.Move -= RegularMovement;
-        PlayerInput.Jump -= Jump;
+        PlayerInput.Jump -= DoJump;
         PlayerInput.GroundPound -= StartGroundPound;
         PlayerInput.Dash -= StartDash;
         PlayerInput.FlyMode -= StartFly;
     }
-    // Update is called once per frame
+
     void Update()
     {
-        //Developer Console
-        // if (Input.GetKeyDown(KeyCode.Return))
-        //     Console.OnToggle();
-        //if (InAir)
-        //    return;
+        var state = GetAnimationState();
 
-        //use this if you dont want to be able to control while in air
-        //&&GetIfGrounded()
-        //if (GroundMode && !InAir)
-        //    DoGroundMode();
-        // else if (!GroundMode) DoFlyMode();
+        _jumpPressed = false;
+        _landed = false;
+        _attacked = false;
+
+        if (state == _currentState) return;
+        anim.CrossFade(state, 0, 0);
+        _currentState = state;
 
         if (AwaitReset && GetIfGrounded())
         {
             CanDash = true;
             AwaitReset = false;
         }
-        //lazy fix
-        //basically dash wouldnt trigger cause it was in the do ground mode func
-        //jump
-
-
-        //dash
-
     }
 
+    private int GetAnimationState()
+    {
+        if (Time.time < animLockout) return _currentState;
+
+        // Priorities
+        //if (_attacked) return LockState(Attack, _attackAnimTime);
+        if (_landed) return LockState(Land, _landAnimDuration);
+        if (_jumpPressed) return Jump;
+
+        Debug.Log("Velocity X:" + RB.velocity.x + " " + RB.velocity.x);
+        if (grounded) return Mathf.Abs(RB.velocity.x + RB.velocity.z) <= 0.3 ? Idle : Run;
+
+        return RB.velocity.y > 0 ? Jump : Fall;
+
+        int LockState(int s, float t)
+        {
+            animLockout = Time.time + t;
+            return s;
+        }
+    }
 
     #region BasicMovement
     public void RegularMovement(Vector2 InputVec)
@@ -142,7 +191,6 @@ public class CharacterMovement : MonoBehaviour
             //  if (RB.velocity.magnitude > 0.5f)
             //      RB.velocity = new Vector3((RB.velocity.x - RB.velocity.x / BaseDecceleration), Yspeed, (RB.velocity.z - RB.velocity.z / BaseDecceleration));
             //  else RB.velocity = new Vector3(0, Yspeed, 0);
-            //
 
             if (IsDecellerating == false) TrackedVelocity = RB.velocity;
 
@@ -156,16 +204,13 @@ public class CharacterMovement : MonoBehaviour
         }
         if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
         {
-            //RB.velocity = RB.velocity.normalized * Speed;
-
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
         TerminalVelocityCalc();
     }
-    private void Jump()
-    {
-      
+    private void DoJump()
+    {     
         RB.velocity += JumpHeight * Vector3.up * Convert.ToInt32(GetIfGrounded());
     }
 
@@ -362,7 +407,12 @@ public class CharacterMovement : MonoBehaviour
     #endregion FlyAbility
     public bool GetIfGrounded()
     {
-        return Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround);
+        if (Physics.Raycast(transform.position, Vector3.down, DistToGround, WhatIsGround)   ) 
+            grounded = true;
+        else
+            grounded = false;
+
+        return grounded;
     }
     public void ActivateBoost(Vector3 Direction)
     {
@@ -378,13 +428,5 @@ public class CharacterMovement : MonoBehaviour
         SlowCurrentSpeed = 0.01f;
 
     }
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    if (!collision.gameObject.TryGetComponent(out BasicEnemy Enemy))
-    //        return;
-    //
-    //    Destroy(collision.gameObject);
-    //    StartCoroutine(FlyCharge());
-    //    
-    //}
+
 }

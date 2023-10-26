@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour
     
     private Quaternion Direction;
     public Vector2 MouseInput  = Vector2.zero;
+
     private void Awake()
     {
         PlayerInput.Look += Look;
@@ -21,11 +22,6 @@ public class CameraController : MonoBehaviour
     }
     void Update()
     {
-        //Mouse Input
-        // MouseInput.x += Input.GetAxis("Mouse X") * sensitivity;
-        // MouseInput.y -= Input.GetAxis("Mouse Y") * sensitivity;
-        // 
-        //lo Input.GetAxis("Mouse Y")cks rota Input.GetAxis("Mouse Y")tion
         Direction = Quaternion.Euler(MouseInput.y, 0, 0);
         MouseInput.y = Mathf.Clamp(MouseInput.y, -lookXLimit, lookXLimit);
         
