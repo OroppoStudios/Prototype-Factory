@@ -19,8 +19,10 @@ public class SpeedUI : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {   
-        text.text = (RB.velocity.magnitude * 3.6f+(1.3f* ((RB.velocity.magnitude > 0.1f) ? 1 : 0))).ToString("0.0") + " KMPH";
+
+        //in case you need the extra 1.3f
+    {   //+(1.3f* ((RB.velocity.magnitude > 0.1f) ? 1 : 0)))
+        text.text = (RB.velocity.magnitude * 3.6f).ToString("0.0") + " KMPH";
         Speedlines.SetActive(RB.velocity.magnitude * 3.6f > SpeedLineThreshold);
     }
 }
