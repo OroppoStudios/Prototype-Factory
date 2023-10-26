@@ -158,7 +158,8 @@ public class CharacterMovement : MonoBehaviour
         if (_landed) return LockState(Land, _landAnimDuration);
         if (_jumpPressed) return Jump;
 
-        Debug.Log("Velocity X:" + RB.velocity.x + " " + RB.velocity.x);
+        Debug.Log("Velocity X:" + RB.velocity.x + " Velocity Z:" + RB.velocity.z);
+
         if (grounded) return Mathf.Abs(RB.velocity.x + RB.velocity.z) <= 0.3 ? Idle : Run;
 
         return RB.velocity.y > 0 ? Jump : Fall;
