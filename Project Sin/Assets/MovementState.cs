@@ -12,7 +12,7 @@ public interface IState
 
 public enum MoveState 
 {
-    Standard, GroundPounding, Flying, Grappling, Suspended
+    Standard, GroundPounding, Flying, Tethering,DoubleTethering, Suspended
 }
 public class StandardState : IState
 {
@@ -87,11 +87,18 @@ public class FlyingState : IState
         PlayerInput.Move -= CharacterMovement.FlyMovement;
     }
 }
-public class GrapplingState : IState
+public class TetheringState : IState
 {
+    CharacterMovement CharacterMovement;
+
+    public TetheringState(CharacterMovement Character)
+    {
+        CharacterMovement = Character;
+    }
     public void Enter()
     {
-        Debug.Log("entering Grappling state");
+        //subscribe to move because move is called each frame, dont @me bro
+       PlayerInput.Move += CharacterMovement.SingleTetherMovement;
     }
 
     public void Execute()
@@ -101,7 +108,30 @@ public class GrapplingState : IState
 
     public void Exit()
     {
-        Debug.Log("exiting Grappling state");
+        PlayerInput.Move -= CharacterMovement.SingleTetherMovement;
+    }
+}public class DoubleTetheringState : IState
+{
+    CharacterMovement CharacterMovement;
+
+    public DoubleTetheringState(CharacterMovement Character)
+    {
+        CharacterMovement = Character;
+    }
+    public void Enter()
+    {
+        //subscribe to move because move is called each frame, dont @me bro
+       PlayerInput.Move += CharacterMovement.SingleTetherMovement;
+    }
+
+    public void Execute()
+    {
+        Debug.Log("updating Grappling state");
+    }
+
+    public void Exit()
+    {
+        PlayerInput.Move -= CharacterMovement.SingleTetherMovement;
     }
 }
 public class SuspendedState : IState
@@ -142,8 +172,11 @@ public class MovementState
             case MoveState.Flying:
                 currentState = new FlyingState(Character);
                 break;
-            case MoveState.Grappling:
-                currentState = new GrapplingState();
+            case MoveState.Tethering:
+                currentState = new TetheringState(Character);
+                break;
+            case MoveState.DoubleTethering:
+                currentState = new TetheringState(Character);
                 break;
             case MoveState.Suspended:
                 currentState = new SuspendedState();

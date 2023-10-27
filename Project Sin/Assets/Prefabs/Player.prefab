@@ -1899,7 +1899,6 @@ GameObject:
   - component: {fileID: 3019479820674663539}
   - component: {fileID: 3019479820674663543}
   - component: {fileID: 3019479820674663432}
-  - component: {fileID: 3019479820674663433}
   - component: {fileID: 3019479820674663537}
   - component: {fileID: 1535548238161928706}
   m_Layer: 8
@@ -2113,49 +2112,15 @@ MonoBehaviour:
   _attackAnimTime: 0
   _landAnimDuration: 0
   animLockout: 0.2
+  Camera: {fileID: 8358640198378586137}
+  TetherRange: 13.1
+  WhatIsTetherable:
+    serializedVersion: 2
+    m_Bits: 8
   RB: {fileID: 0}
   PlaneModel: {fileID: 9168962879906650668}
   SonicBoom_VFX: {fileID: 1008078883529866592}
   Console: {fileID: 3019479820674663541}
---- !u!114 &3019479820674663433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2498521747904945841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48f8355cf3c4a33478cec0ee64f85611, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Tracking: 0
-  LockedOn: 0
-  Camera: {fileID: 8358640198378586137}
-  PlayerCamera: {fileID: 8358640198067854532}
-  TargetIndicator: {fileID: 8358640196928618846}
-  TargetIndicators:
-  - {fileID: 8358640196928618846}
-  - {fileID: 8358640197326136402}
-  - {fileID: 8358640196557477168}
-  - {fileID: 8358640196600461130}
-  - {fileID: 8358640196794898705}
-  TargetingCorners:
-  - {fileID: 8358640196712967010}
-  - {fileID: 8358640197655395315}
-  - {fileID: 8358640197901713546}
-  - {fileID: 8358640198531646448}
-  Targets: []
-  MissilePrefab: {fileID: 1071163369004254373, guid: 737b8cf589ef76041aa29bb8600d3eeb,
-    type: 3}
-  WhatIsTargetable:
-    serializedVersion: 2
-    m_Bits: 64
-  TargetingSystemUISize: 1
-  MissileSeekRange: 100
-  LockOnTime: 1
-  MaxTargets: 2
-  MissleSpeed: 85
 --- !u!137 &3019479820674663537
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -9072,7 +9037,7 @@ GameObject:
   - component: {fileID: 8358640198378586138}
   - component: {fileID: 8358640198378586139}
   m_Layer: 0
-  m_Name: EnemyDetectionProjection
+  m_Name: TargetDetectionProjection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10044,7 +10009,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: fb07540b24f2fb144933284bf146140c,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7202271454713460447, guid: fb07540b24f2fb144933284bf146140c,
         type: 3}
