@@ -27,7 +27,7 @@ public class SpeedRunTimer : MonoBehaviour
     }
     public void StopTimer()
     {
-        TimerEnabled = true;
+        TimerEnabled = false;
     }
 
     private void Awake()
@@ -35,4 +35,5 @@ public class SpeedRunTimer : MonoBehaviour
         if (!Instance)
             Instance = this;
     }
+    
 }
