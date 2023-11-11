@@ -64,10 +64,8 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField]
     private float animLockout = 0.2f;
-    [Header("TetherDetails \n")]
-    public Camera Camera;
-    [Range(0, 50)] public float TetherRange = 25f;
-    public LayerMask WhatIsTetherable;
+
+ 
     #endregion
 
     #region Cached Values
@@ -77,10 +75,10 @@ public class CharacterMovement : MonoBehaviour
     public VisualEffect SonicBoom_VFX;
     private Renderer meshRenderer;
     public DeveloperConsoleBehaviour Console;
-    public MovementState PlayersState;
+    [HideInInspector] public MovementState PlayersState;
     private Animator anim;
     private DustCharge DustCharge;
-
+    public GrappleSystem GrappleSystem;
     private int _currentState;
 
     private static readonly int Idle = Animator.StringToHash("Idle");
@@ -100,11 +98,7 @@ public class CharacterMovement : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * DistToGround);
         Gizmos.DrawLine(transform.position, transform.position + vecta);
     }
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, TetherRange);
-    }
+ 
     private void Awake()
     {
         RB = GetComponent<Rigidbody>();
@@ -118,7 +112,7 @@ public class CharacterMovement : MonoBehaviour
         CurrentTopSpeed = BaseSpeed;
         meshRenderer.enabled = true;
         CanGroundPound = true;
-        PlayersState = new MovementState(this);
+        PlayersState = new MovementState(this, GrappleSystem);
         PlayersState.ChangeState(MoveState.Standard);
         PlaneModel.gameObject.SetActive(false);
 
@@ -126,7 +120,6 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound += StartGroundPound;
         PlayerInput.Dash += StartDash;
         PlayerInput.FlyMode += StartFly;
-        PlayerInput.Tether += StartTether;
 
     }
 
@@ -137,7 +130,7 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound -= StartGroundPound;
         PlayerInput.Dash -= StartDash;
         PlayerInput.FlyMode -= StartFly;
-        PlayerInput.Tether -= StartTether;
+    
     }
 
     void Update()
@@ -422,66 +415,7 @@ public class CharacterMovement : MonoBehaviour
 
     #endregion FlyAbility
 
-    #region TetherAbility
-
-    public void StartTether() 
-    {
-        Debug.Log("Tether");
-        //TODO: 
-        //figure out how many targets the chick is looking at 
-        Collider[] colls = Physics.OverlapSphere(transform.position, TetherRange, WhatIsTetherable);
-        var TetherPoints = GetClosestEnemies(colls);
-        Debug.Log(TetherPoints[0].name);
-        Debug.Log(TetherPoints[1].name);
-        // PlayersState.ChangeState(MoveState.Tethering);
-    }
-
-    public void SingleTetherMovement(Vector2 vector)
-    {
-
-    } 
-    public void DoubleTetherMovement(Vector2 vector)
-    {
-
-    }
-    List<Transform> GetClosestEnemies(Collider[] enemies)
-    {
-        List<Transform> Targets = new List<Transform>();
-
-        for (int i = 0; i < 2; i++)
-        {
-            Transform bestTarget = null;
-            float closestDistanceSqr = Mathf.Infinity;
-            Vector3 currentPosition = transform.position;
-            foreach (Collider potentialTarget in enemies)
-            {
-                Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
-                float dSqrToTarget = directionToTarget.sqrMagnitude;
-                if ((dSqrToTarget < closestDistanceSqr) && !Targets.Contains(potentialTarget.transform) && IsVisible(Camera, potentialTarget.gameObject))
-                {
-                    closestDistanceSqr = dSqrToTarget;
-                    bestTarget = potentialTarget.transform;
-                }
-            }
-            Targets.Add(bestTarget);
-        }
-        return Targets;
-    }
-    private bool IsVisible(Camera c, GameObject target)
-    {
-        var planes = GeometryUtility.CalculateFrustumPlanes(c);
-        var point = target.transform.position;
-
-        foreach (var plane in planes)
-        {
-            if (plane.GetDistanceToPoint(point) < 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    #endregion TetherAbility
+   
 
 
     public bool GetIfGrounded()

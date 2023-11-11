@@ -89,16 +89,16 @@ public class FlyingState : IState
 }
 public class TetheringState : IState
 {
-    CharacterMovement CharacterMovement;
-
-    public TetheringState(CharacterMovement Character)
+    
+    GrappleSystem GrappleSystem;
+    public TetheringState(GrappleSystem Grapple)
     {
-        CharacterMovement = Character;
+        GrappleSystem = Grapple;
     }
     public void Enter()
     {
         //subscribe to move because move is called each frame, dont @me bro
-       PlayerInput.Move += CharacterMovement.SingleTetherMovement;
+        PlayerInput.Move += GrappleSystem.SingleTether;
     }
 
     public void Execute()
@@ -108,20 +108,20 @@ public class TetheringState : IState
 
     public void Exit()
     {
-        PlayerInput.Move -= CharacterMovement.SingleTetherMovement;
+        PlayerInput.Move -= GrappleSystem.SingleTether;
     }
 }public class DoubleTetheringState : IState
 {
-    CharacterMovement CharacterMovement;
 
-    public DoubleTetheringState(CharacterMovement Character)
+    GrappleSystem GrappleSystem;
+    public DoubleTetheringState(GrappleSystem Grapple)
     {
-        CharacterMovement = Character;
+        GrappleSystem = Grapple;
     }
     public void Enter()
     {
         //subscribe to move because move is called each frame, dont @me bro
-       PlayerInput.Move += CharacterMovement.SingleTetherMovement;
+        PlayerInput.Move += GrappleSystem.DoubleTether;
     }
 
     public void Execute()
@@ -131,7 +131,7 @@ public class TetheringState : IState
 
     public void Exit()
     {
-        PlayerInput.Move -= CharacterMovement.SingleTetherMovement;
+        PlayerInput.Move -= GrappleSystem.DoubleTether;
     }
 }
 public class SuspendedState : IState
@@ -155,9 +155,11 @@ public class MovementState
 {
     IState currentState;
     CharacterMovement Character;
-    public MovementState(CharacterMovement character)
+    GrappleSystem Grapple;
+    public MovementState(CharacterMovement character, GrappleSystem GrappleSystem)
     {
         Character = character;
+        Grapple = GrappleSystem;
     }
     public void ChangeState(MoveState State)
     {
@@ -173,10 +175,10 @@ public class MovementState
                 currentState = new FlyingState(Character);
                 break;
             case MoveState.Tethering:
-                currentState = new TetheringState(Character);
+                currentState = new TetheringState(Grapple);
                 break;
             case MoveState.DoubleTethering:
-                currentState = new TetheringState(Character);
+                currentState = new DoubleTetheringState (Grapple);
                 break;
             case MoveState.Suspended:
                 currentState = new SuspendedState();

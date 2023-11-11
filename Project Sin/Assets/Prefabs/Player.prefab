@@ -2112,15 +2112,11 @@ MonoBehaviour:
   _attackAnimTime: 0
   _landAnimDuration: 0
   animLockout: 0.2
-  Camera: {fileID: 8358640198378586137}
-  TetherRange: 13.1
-  WhatIsTetherable:
-    serializedVersion: 2
-    m_Bits: 8
   RB: {fileID: 0}
   PlaneModel: {fileID: 9168962879906650668}
   SonicBoom_VFX: {fileID: 1008078883529866592}
   Console: {fileID: 3019479820674663541}
+  GrappleSystem: {fileID: 0}
 --- !u!137 &3019479820674663537
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
