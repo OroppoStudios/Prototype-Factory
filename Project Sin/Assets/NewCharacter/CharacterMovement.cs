@@ -175,6 +175,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
     #region BasicMovement
+ 
     public void RegularMovement(Vector2 InputVec)
     {
 
@@ -211,7 +212,7 @@ public class CharacterMovement : MonoBehaviour
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
-        TerminalVelocityCalc();
+        //TerminalVelocityCalc();
     }
     private void DoJump()
     {     
