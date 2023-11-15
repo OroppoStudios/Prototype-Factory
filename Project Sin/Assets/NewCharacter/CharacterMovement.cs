@@ -42,7 +42,8 @@ public class CharacterMovement : MonoBehaviour
     [HideInInspector] public int BoostLevel = 0;
 
     [Header("Player Other" + "\n")]
-    [HideInInspector] public float CurrentTopSpeed = 1, SlowCurrentSpeed = 0.01f;
+    //[HideInInspector] 
+    public float CurrentTopSpeed = 1, SlowCurrentSpeed = 0.01f;
     private WaitForSeconds DashTimer, FlyWindow, BoostTimer;
 
     // I added this to prototype extending flight duration mid flight - Kai
@@ -174,8 +175,19 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    public IEnumerator GeneralSlowDown(float time, float Speed)
+    {
+        float i = 0.01f;
+        while (i < time)
+        {
+            CurrentTopSpeed = (BaseSpeed + (Speed - BaseSpeed) * (1 - i / time));
+            i += 0.01f;
+            yield return new WaitForSeconds(0.01f);
+        }
+        CurrentTopSpeed = BaseSpeed;
+    }
     #region BasicMovement
- 
+
     public void RegularMovement(Vector2 InputVec)
     {
 
@@ -212,7 +224,7 @@ public class CharacterMovement : MonoBehaviour
             RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed / 3.6f;
             RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
         }
-        //TerminalVelocityCalc();
+        TerminalVelocityCalc();
     }
     private void DoJump()
     {     
@@ -228,7 +240,7 @@ public class CharacterMovement : MonoBehaviour
         // Debug.Log("slow " +IsDecellerating + " " + SlowCurrentSpeed + " " + BaseDecceleration);
 
         // Debug.Log("try decellerating");
-        if (!IsDecellerating || SlowCurrentSpeed > BaseDecceleration) return;
+        if (!IsDecellerating || SlowCurrentSpeed > BaseDecceleration||!GetIfGrounded()) return;
 
         //  Debug.Log("decellerating");
 

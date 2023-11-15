@@ -1901,6 +1901,7 @@ GameObject:
   - component: {fileID: 3019479820674663432}
   - component: {fileID: 3019479820674663537}
   - component: {fileID: 1535548238161928706}
+  - component: {fileID: 93055156}
   m_Layer: 8
   m_Name: Body+Logic
   m_TagString: Player
@@ -1916,7 +1917,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2498521747904945841}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.324, z: 0}
+  m_LocalPosition: {x: 0, y: 0.39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2116,7 +2117,7 @@ MonoBehaviour:
   PlaneModel: {fileID: 9168962879906650668}
   SonicBoom_VFX: {fileID: 1008078883529866592}
   Console: {fileID: 3019479820674663541}
-  GrappleSystem: {fileID: 0}
+  GrappleSystem: {fileID: 93055156}
 --- !u!137 &3019479820674663537
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -2342,6 +2343,35 @@ MonoBehaviour:
   - {fileID: 667324544}
   - {fileID: 1838474367}
   TopOfBar: {fileID: 3018472665341542932}
+--- !u!114 &93055156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2498521747904945841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fdcf4ede614ed4080865a7e463f510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProjectionCamera: {fileID: 8358640198378586137}
+  Camera: {fileID: 8358640198067854532}
+  TetherRange: 22.9
+  WhatIsTetherable:
+    serializedVersion: 2
+    m_Bits: 8
+  TargetingCorners:
+  - {fileID: 8358640196712967010}
+  - {fileID: 8358640197655395315}
+  - {fileID: 8358640197901713546}
+  - {fileID: 8358640198531646448}
+  TargetingSystemUISize: 1
+  TetherZoomIntensity: 0.25
+  TetherHoldTime: 0.2
+  TetherReleaseTime: 0.25
+  DoublePointTetherSpeed: 150
+  BaseCameraFOV: 60
 --- !u!1 &2500898111660002842
 GameObject:
   m_ObjectHideFlags: 0
@@ -9085,7 +9115,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 8
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

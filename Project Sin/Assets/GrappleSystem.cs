@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GrappleSystem : MonoBehaviour
 {
-    [Header("TetherDetails \n")]
-    public Camera Camera;
+   
+    public Camera ProjectionCamera, Camera;
     [Range(0, 50)] public float TetherRange = 25f;
     private int NumPoints = 0;
     protected readonly Vector2[] InitCornerPos = new Vector2[]
@@ -15,16 +15,19 @@ public class GrappleSystem : MonoBehaviour
     protected const float InitFOV = 28.0f;
     public LayerMask WhatIsTetherable;
     public List<RectTransform> TargetingCorners;
-    [Range(0, 1)] public float TargetingSystemUISize = 1;
+    [Range(0, 1)] public float TargetingSystemUISize = 1, TetherZoomIntensity =0.25f;
+    [Range(0,3)] public float TetherHoldTime = 1, TetherReleaseTime;
     [Range(50, 200)] public float DoublePointTetherSpeed = 100;
     private List<Vector3> TetherPoints = new List<Vector3>(2);
     LineRenderer lines;
+    private bool TetherCharged = false;
+    public float BaseCameraFOV;
     private void Awake()
     {
         PlayerInput.Tether += StartTether;
         TetherPoints.Add(Vector3.zero); 
         TetherPoints.Add(Vector3.zero);
-         lines = gameObject.AddComponent<LineRenderer>();
+        lines = gameObject.AddComponent<LineRenderer>();
     }
     private void OnDestroy()
     {
@@ -37,11 +40,12 @@ public class GrappleSystem : MonoBehaviour
     }
     private void OnValidate()
     {
+        BaseCameraFOV = Camera.fieldOfView;
         for (int i = 0; i <= 3; i++)
         {
             TargetingCorners[i].anchoredPosition = InitCornerPos[i] * TargetingSystemUISize;
         }
-        Camera.fieldOfView = InitFOV * TargetingSystemUISize;
+        ProjectionCamera.fieldOfView = InitFOV * TargetingSystemUISize;
     }
     public void StartTether()
     {
@@ -71,6 +75,7 @@ public class GrappleSystem : MonoBehaviour
             case 2:
                 TetherPoints[0] = GrapplePoints[0].position;
                 TetherPoints[1] = GrapplePoints[1].position;
+                StartCoroutine(HoldTether());
                 GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.DoubleTethering);
                 break;
         }
@@ -87,7 +92,7 @@ public class GrappleSystem : MonoBehaviour
     {
        
         Debug.Log("double");
-       
+        lines.enabled = true;
         lines.positionCount = 4;
         lines.SetPosition(0, transform.position);
         lines.SetPosition(1, TetherPoints[0]);
@@ -101,33 +106,56 @@ public class GrappleSystem : MonoBehaviour
     #region TetherAbility
 
     
-
+    private IEnumerator HoldTether()
+    {
+        float journey = 0f;
+        while (journey <= TetherHoldTime)
+        {
+            Camera.fieldOfView = BaseCameraFOV-(BaseCameraFOV * (journey/TetherHoldTime)*(BaseCameraFOV*TetherZoomIntensity/BaseCameraFOV));
+            yield return new WaitForSeconds(0.01f);
+            journey += 0.01f;
+        }     
+        TetherCharged = true;
+        StartCoroutine(ReleaseTether());
+    }
+    private IEnumerator ReleaseTether()
+    {
+        float journey = TetherReleaseTime;
+        while (journey >= 0.0f)
+        {
+            Camera.fieldOfView = BaseCameraFOV - (BaseCameraFOV * (journey / TetherHoldTime) * (BaseCameraFOV * TetherZoomIntensity / BaseCameraFOV));
+            yield return new WaitForSeconds(0.01f);
+            journey -= 0.01f;
+        }
+        Camera.fieldOfView = BaseCameraFOV;
+    }
     public void SingleTetherMovement(Vector2 vector)
     {
 
     }
     public void DoubleTetherMovement()
     {
+        if (!TetherCharged) return;
+
         Vector3 Midway = Vector3.Lerp(TetherPoints[0], TetherPoints[1], 0.5f);
         Vector3 Target = transform.position-(transform.position-Midway)*1.5f;
         GetComponent<Rigidbody>().useGravity = false;
-       GetComponent<Rigidbody>().velocity = (Target - transform.position).normalized * DoublePointTetherSpeed/3.6f;
+        GetComponent<Rigidbody>().velocity = (Target - transform.position).normalized * DoublePointTetherSpeed/3.6f;
        if((Target - transform.position).magnitude < 3.0f)
         {
             GetComponent<Rigidbody>().useGravity = true;
             GetComponent<Rigidbody>().velocity = (Target - transform.position).normalized * DoublePointTetherSpeed / 3.6f;
-            GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Suspended);
-            //confirms that theres something going on with the standard state
-            Invoke(nameof(test), 1.0f);
+            GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Standard);
+            StartCoroutine(GetComponent<CharacterMovement>().GeneralSlowDown(1, DoublePointTetherSpeed));
+            lines.enabled = false;
+            TetherCharged = false;
+            //Invoke(nameof(test), 1.0f);
         }
            
 
         //lines.SetPosition(3, Target);
     }
-    void test()
-    {
-        GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Standard);
-    }
+ 
     List<Transform> GetClosestEnemies(Collider[] enemies)
     {
         List<Transform> Targets = new List<Transform>();
@@ -141,7 +169,7 @@ public class GrappleSystem : MonoBehaviour
             {
                 Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
                 float dSqrToTarget = directionToTarget.sqrMagnitude;
-                if ((dSqrToTarget < closestDistanceSqr) && !Targets.Contains(potentialTarget.transform) && IsVisible(Camera, potentialTarget.gameObject))
+                if ((dSqrToTarget < closestDistanceSqr) && !Targets.Contains(potentialTarget.transform) && IsVisible(ProjectionCamera, potentialTarget.gameObject))
                 {
                     closestDistanceSqr = dSqrToTarget;
                     bestTarget = potentialTarget.transform;

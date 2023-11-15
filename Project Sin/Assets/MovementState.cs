@@ -25,6 +25,7 @@ public class StandardState : IState
     public void Enter()
     {
         PlayerInput.Move += CharacterMovement.RegularMovement;
+        CharacterMovement.SlowCurrentSpeed = 0.01f;
     }
 
     public void Execute()
