@@ -16,12 +16,12 @@ public class GrappleSystem : MonoBehaviour
     public LayerMask WhatIsTetherable;
     public List<RectTransform> TargetingCorners;
     [Range(0, 1)] public float TargetingSystemUISize = 1, TetherZoomIntensity =0.25f;
-    [Range(0,3)] public float TetherHoldTime = 1, TetherReleaseTime;
-    [Range(50, 200)] public float DoublePointTetherSpeed = 100;
+    [Range(0, 3)] public float TetherHoldTime = 1, TetherReleaseTime, SPTetherTime=0.5f;
+    [Range(50, 200)] public float DoublePointTetherSpeed = 100, SinglePointTetherSpeed = 100;
     private List<Vector3> TetherPoints = new List<Vector3>(2);
     LineRenderer lines;
     private bool TetherCharged = false;
-    public float BaseCameraFOV;
+    private float BaseCameraFOV;
     private void Awake()
     {
         PlayerInput.Tether += StartTether;
@@ -70,6 +70,7 @@ public class GrappleSystem : MonoBehaviour
                 break;
             case 1:
                 TetherPoints[0] = GrapplePoints[0].position;
+                Invoke(nameof(StopSingleTetherMovement), SPTetherTime);
                 GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Tethering);
                 break;
             case 2:
@@ -87,6 +88,13 @@ public class GrappleSystem : MonoBehaviour
     public void SingleTether(Vector2 vec)
     {
         Debug.Log("single");
+        lines.enabled = true;
+        lines.positionCount = 2;
+        lines.SetPosition(0, transform.position);
+        lines.SetPosition(1, TetherPoints[0]);
+        lines.SetWidth(0.05f, 0.05f);
+
+        SingleTetherMovement();
     }
     public void DoubleTether(Vector2 vec)
     {
@@ -129,9 +137,10 @@ public class GrappleSystem : MonoBehaviour
         }
         Camera.fieldOfView = BaseCameraFOV;
     }
-    public void SingleTetherMovement(Vector2 vector)
+    public void SingleTetherMovement()
     {
-
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<Rigidbody>().velocity = Camera.transform.rotation * Vector3.forward * SinglePointTetherSpeed/3.6f;   
     }
     public void DoubleTetherMovement()
     {
@@ -155,7 +164,13 @@ public class GrappleSystem : MonoBehaviour
 
         //lines.SetPosition(3, Target);
     }
- 
+    void StopSingleTetherMovement()
+    {
+        GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Standard);
+        StartCoroutine(GetComponent<CharacterMovement>().GeneralSlowDown(1, SinglePointTetherSpeed));
+        GetComponent<Rigidbody>().useGravity = true;
+        lines.enabled = false;
+    }
     List<Transform> GetClosestEnemies(Collider[] enemies)
     {
         List<Transform> Targets = new List<Transform>();
