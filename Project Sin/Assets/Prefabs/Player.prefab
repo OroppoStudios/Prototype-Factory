@@ -169,7 +169,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1605195924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2328,7 +2328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 446b8deb6d0876c4c935fdf6c8452b9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DustCharges: 2
+  DustCharges: 3
   MaxDustCharges: 3
   BoostBars:
   - {fileID: 594605805933739133}
@@ -2370,8 +2370,9 @@ MonoBehaviour:
   TetherZoomIntensity: 0.25
   TetherHoldTime: 0.2
   TetherReleaseTime: 0.25
+  SPTetherTime: 0.5
   DoublePointTetherSpeed: 150
-  BaseCameraFOV: 60
+  SinglePointTetherSpeed: 100
 --- !u!1 &2500898111660002842
 GameObject:
   m_ObjectHideFlags: 0
