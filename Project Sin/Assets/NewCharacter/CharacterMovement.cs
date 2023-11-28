@@ -16,9 +16,11 @@ public class CharacterMovement : MonoBehaviour
     [Range(0, 5)] public float BaseAcceleration = 1;
     [Range(0, 3)] public float BaseDecceleration = 1;
     [Range(0, 3)] public float DashDecceleration = 1;
+    [Range(0, 3)] public float SprintDecceleration = 1;
     [Range(0, 3)] public float BoostDecceleration = 1;
     [Range(0, 250)] public float GrappleSpeed = 30;
     [Range(50, 150)] public float DashSpeed = 100;
+    [Range(50, 250)] public float SprintSpeed = 100;
     [Range(50, 200)] public float GroundPoundSpeed = 100;
     [Range(0, 300)] public float FlyingSpeed = 50;
     [Range(0, 1)] public float AirControlReduction = 1;
@@ -26,6 +28,7 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Player Timers" + "\n")]
     [Range(0, 0.5f)] public float DashTime = 0.25f;
+    [Range(0, 10f)] public float SprintTime = 5f;
     [Range(0, 3f)] public float BoostDuration = 1f;
     [Range(0, 15)] public float FlyTime = 5;
     [Range(0, 2.5f)] public float FlyChargeWindow = 1f;
@@ -121,7 +124,7 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound += StartGroundPound;
         PlayerInput.Dash += StartDash;
         PlayerInput.FlyMode += StartFly;
-
+        PlayerInput.Sprint += StartSprint;
     }
 
     private void OnDestroy()
@@ -131,7 +134,7 @@ public class CharacterMovement : MonoBehaviour
         PlayerInput.GroundPound -= StartGroundPound;
         PlayerInput.Dash -= StartDash;
         PlayerInput.FlyMode -= StartFly;
-    
+        PlayerInput.Sprint -= StartSprint;
     }
 
     void Update()
@@ -345,6 +348,56 @@ public class CharacterMovement : MonoBehaviour
 
 
     #endregion DashAbility
+
+
+    #region SprintAbility
+
+    private void StartSprint()
+    {       
+        if (!DustCharge.ValidateCharge())
+            return;
+        //this is so that other speed boosts do not stop the dash short and reset its trajectory
+        StopAllCoroutines();
+        StartCoroutine(Sprint());
+       
+    }
+    private IEnumerator Sprint()
+    {
+        float i = 0f;
+
+        while (SprintTime > i)
+        {
+        CurrentTopSpeed = SprintSpeed;
+    
+        //uncomment the commented parts if you want UD vel to be unaffected by gravity
+        //float Yspeed = RB.velocity.y;
+       // if (RB.velocity.magnitude <= 0.1f)
+       //     RB.velocity = transform.rotation * Vector3.forward * CurrentTopSpeed;
+       // RB.velocity = new Vector3(RB.velocity.x, 0, RB.velocity.z).normalized * CurrentTopSpeed;
+
+
+        //RB.velocity = new Vector3(RB.velocity.x, Yspeed, RB.velocity.z);
+        yield return new WaitForSeconds(0.025f);
+            i += 0.025f;
+        }
+        IsDecellerating = false;
+        SlowCurrentSpeed = 0.01f;
+        StartCoroutine(SprintSlowDown());
+    }
+    private IEnumerator SprintSlowDown()
+    {
+        float i = 0.01f;
+        while (i < SprintDecceleration)
+        {
+            CurrentTopSpeed = (BaseSpeed + (SprintSpeed - BaseSpeed) * (1 - i / SprintDecceleration));
+            i += 0.01f;
+            yield return new WaitForSeconds(0.01f);
+        }
+        CurrentTopSpeed = BaseSpeed;
+    }
+
+
+    #endregion SprintAbility
 
     #region BoostAbility
     private IEnumerator Boost(Vector3 Direction, float Speed)

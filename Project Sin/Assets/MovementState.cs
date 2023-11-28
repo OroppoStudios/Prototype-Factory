@@ -12,7 +12,7 @@ public interface IState
 
 public enum MoveState 
 {
-    Standard, GroundPounding, Flying, Tethering,DoubleTethering, Suspended
+    Standard, GroundPounding, Flying, Tethering,DoubleTethering, Suspended, Sprinting
 }
 public class StandardState : IState
 {
@@ -135,6 +135,7 @@ public class TetheringState : IState
         PlayerInput.Move -= GrappleSystem.DoubleTether;
     }
 }
+
 public class SuspendedState : IState
 {
     public void Enter()

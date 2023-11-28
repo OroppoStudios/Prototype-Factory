@@ -107,6 +107,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""3345f404-82a1-45ed-adc8-29729b12d867"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -322,7 +331,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ffb1032a-0444-458c-b902-246f7f6ef77c"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -360,6 +369,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Tether"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""47ab4ca1-90ec-481b-8a9b-d4bb2c12e9ae"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -766,6 +786,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Player_FlyMode = m_Player.FindAction("FlyMode", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Tether = m_Player.FindAction("Tether", throwIfNotFound: true);
+        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         // Player Flying Mode
         m_PlayerFlyingMode = asset.FindActionMap("Player Flying Mode", throwIfNotFound: true);
         m_PlayerFlyingMode_Thrust = m_PlayerFlyingMode.FindAction("Thrust", throwIfNotFound: true);
@@ -843,6 +864,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_FlyMode;
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Tether;
+    private readonly InputAction m_Player_Sprint;
     public struct PlayerActions
     {
         private @Inputs m_Wrapper;
@@ -856,6 +878,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @FlyMode => m_Wrapper.m_Player_FlyMode;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @Tether => m_Wrapper.m_Player_Tether;
+        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -892,6 +915,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Tether.started += instance.OnTether;
             @Tether.performed += instance.OnTether;
             @Tether.canceled += instance.OnTether;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -923,6 +949,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @Tether.started -= instance.OnTether;
             @Tether.performed -= instance.OnTether;
             @Tether.canceled -= instance.OnTether;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1065,6 +1094,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnFlyMode(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnTether(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
     public interface IPlayerFlyingModeActions
     {

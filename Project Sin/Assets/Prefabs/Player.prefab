@@ -2071,14 +2071,17 @@ MonoBehaviour:
   BaseAcceleration: 1
   BaseDecceleration: 1
   DashDecceleration: 1
+  SprintDecceleration: 1
   BoostDecceleration: 1
   GrappleSpeed: 50
   DashSpeed: 125
+  SprintSpeed: 100
   GroundPoundSpeed: 100
   FlyingSpeed: 150
   AirControlReduction: 0
   TerminalVelocity: 120
   DashTime: 0.5
+  SprintTime: 5
   BoostDuration: 1
   FlyTime: 1.5
   FlyChargeWindow: 1
