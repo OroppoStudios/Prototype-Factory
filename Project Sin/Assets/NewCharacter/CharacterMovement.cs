@@ -467,6 +467,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void ActivateCharge(Vector3 Direction)
     {
+        StopAllCoroutines();
         StartCoroutine(FlightBurst(Direction));
     }
     public IEnumerator FlightBurst(Vector3 Direction)
