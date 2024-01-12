@@ -2078,6 +2078,7 @@ MonoBehaviour:
   SprintSpeed: 100
   GroundPoundSpeed: 100
   FlyingSpeed: 150
+  FlyingBurstSpeed: 50
   AirControlReduction: 0
   TerminalVelocity: 120
   DashTime: 0.5

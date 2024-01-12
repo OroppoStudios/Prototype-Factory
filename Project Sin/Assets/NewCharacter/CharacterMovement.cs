@@ -23,6 +23,7 @@ public class CharacterMovement : MonoBehaviour
     [Range(50, 250)] public float SprintSpeed = 100;
     [Range(50, 200)] public float GroundPoundSpeed = 100;
     [Range(0, 300)] public float FlyingSpeed = 50;
+    [Range(0, 300)] public float FlyingBurstSpeed = 50;
     [Range(0, 1)] public float AirControlReduction = 1;
     [Range(0, 150)] public float TerminalVelocity = 80;
 
@@ -425,60 +426,62 @@ public class CharacterMovement : MonoBehaviour
     #endregion BoostAbility
 
     #region FlyAbility
-    private IEnumerator FlyCharge()
-    {
-        FlyCharged = true;
-        yield return FlyWindow;
-        FlyCharged = false;
-    }
+ 
 
 
     private void ResetFly()
     {
-        PlayersState.ChangeState(MoveState.Standard);
-        meshRenderer.enabled = true;
-        PlaneModel.gameObject.SetActive(false);
-        CurrentTopSpeed = BaseSpeed;
-        GroundMode = true;
+        GetComponent<CharacterMovement>().PlayersState.ChangeState(MoveState.Standard);
+        RB.useGravity = true;
+        StartCoroutine(GeneralSlowDown(1f, FlyingSpeed));
+
+        return;
+        //this is old code
+       //PlayersState.ChangeState(MoveState.Standard);
+       //meshRenderer.enabled = true;
+       //PlaneModel.gameObject.SetActive(false);
+       //CurrentTopSpeed = BaseSpeed;
+       //GroundMode = true;
+       //RB.useGravity = true;
     }
     public void StartFly()
     {
-        if (!FlyCharged)
-            return;
-        if (!DustCharge.ValidateCharge())
-            return;
-        PlayersState.ChangeState(MoveState.Flying);
+      
     }
     public void FlyMovement(Vector2 InputVec)
     {
         //enable plane model, disable player model
-        meshRenderer.enabled = false;
-        PlaneModel.gameObject.SetActive(true);
-        PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x, 0, 0);
-        CurrentTopSpeed = FlyingSpeed;
-        RB.velocity = transform.GetChild(0).rotation * Vector3.forward * CurrentTopSpeed;
+        //meshRenderer.enabled = false;
+        // PlaneModel.gameObject.SetActive(true);
+        // PlaneModel.transform.localRotation = Quaternion.Euler(transform.GetChild(0).rotation.eulerAngles.x, 0, 0);
+        RB.useGravity = false;
+        CurrentTopSpeed = FlyingSpeed-1.3f;
+        RB.velocity = GetComponentInChildren<CameraController>().transform.rotation * Vector3.forward * CurrentTopSpeed/3.6f;
 
-        if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
-            RB.velocity = RB.velocity.normalized * CurrentTopSpeed / 3.6f;
+        //if (RB.velocity.magnitude > CurrentTopSpeed / 3.6f)
+        //    RB.velocity = RB.velocity.normalized * CurrentTopSpeed / 3.6f;
         
-        if (FlyCharged)
-            Invoke(nameof(ResetFly), FlyTime);
+           
 
-        FlyCharged = false;
-        // I added this to prototype extending flight duration mid flight - Kai
-        if (FlyExtended == true)
-        {
-            CancelInvoke(nameof(ResetFly));
-            Invoke(nameof(ResetFly), FlyTime);
-            FlyExtended = false;
-        }
     }
 
-    public void ActivateCharge()
+    public void ActivateCharge(Vector3 Direction)
     {
-        StartCoroutine(FlyCharge());
+        StartCoroutine(FlightBurst(Direction));
     }
-
+    public IEnumerator FlightBurst(Vector3 Direction)
+    {
+        float timer = 0.0f;
+        while (timer < 0.5f)
+        {
+            CurrentTopSpeed = FlyingBurstSpeed-1.3f;
+            RB.velocity = Direction.normalized * CurrentTopSpeed / 3.6f;
+            yield return new WaitForEndOfFrame();
+            timer += Time.deltaTime;
+        }
+        PlayersState.ChangeState(MoveState.Flying);
+        Invoke(nameof(ResetFly), FlyTime);
+    }
     #endregion FlyAbility
 
    

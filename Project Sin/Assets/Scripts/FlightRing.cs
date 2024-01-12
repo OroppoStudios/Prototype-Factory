@@ -6,27 +6,24 @@ using UnityEngine;
 
 public class FlightRing : MonoBehaviour
 {
-    private CharacterMovement CMObj;
-    // Start is called before the first frame update
-    void Start()
+    [HideInInspector] public bool ChargeUsed=false;
+    public Vector2 Direction;
+    private void OnDrawGizmosSelected()
     {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.position + Vector3.up / 2f, 0.1f);
+        Gizmos.DrawRay(transform.position + Vector3.up / 2f, Quaternion.Euler(Direction) * Vector3.forward);
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            Debug.Log("FLIGHT TIME EXTENDED");
-            CMObj = other.GetComponent<CharacterMovement>();
-            CMObj.FlyExtended = true;
-            
-        }
+        if (ChargeUsed)
+            return;
+
+        if (!other.TryGetComponent(out CharacterMovement Character))
+            return;
+
+        Character.ActivateCharge(Quaternion.Euler(Direction) * Vector3.forward);
+        ChargeUsed = true;
     }
 }

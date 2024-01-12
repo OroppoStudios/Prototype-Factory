@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 156390440}
   - component: {fileID: 156390439}
   - component: {fileID: 156390438}
-  - component: {fileID: 156390437}
+  - component: {fileID: 156390442}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -272,19 +272,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &156390437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 156390436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22067b15e44a6ab40b337232310f76bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Direction: {x: 0, y: 0}
 --- !u!65 &156390438
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -363,6 +350,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &156390442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156390436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f15f9b574f7b4c4a8fcfefcea17425e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChargeUsed: 0
+  Direction: {x: -39.62, y: 0}
 --- !u!1001 &175946708
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -564,7 +565,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31104
+  m_Name: pb_Mesh31098
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1346,7 +1347,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31048
+  m_Name: pb_Mesh31044
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2679,7 +2680,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31176
+  m_Name: pb_Mesh31164
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3936,6 +3937,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3019479820674663432, guid: 096f9813f45f1694688d772a6cac00af,
+        type: 3}
+      propertyPath: FlyTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3019479820674663432, guid: 096f9813f45f1694688d772a6cac00af,
+        type: 3}
+      propertyPath: FlyingBurstSpeed
+      value: 185
+      objectReference: {fileID: 0}
     - target: {fileID: 8358640197158926937, guid: 096f9813f45f1694688d772a6cac00af,
         type: 3}
       propertyPath: m_RootOrder

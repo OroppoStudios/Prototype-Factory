@@ -46,10 +46,10 @@ public class BasicEnemy : MonoBehaviour
         if (Character.Dashing == true)
         {
             //disable the indicator on the player
-            Character.gameObject.TryGetComponent(out MissileSystem Missle);
-            Missle.TargetIndicator.SetActive(false);
-
-            Character.ActivateCharge();
+          //Character.gameObject.TryGetComponent(out MissileSystem Missle);
+          //Missle.TargetIndicator.SetActive(false);
+          //
+          //Character.ActivateCharge();
             DestroyEnemy();
         }
 
