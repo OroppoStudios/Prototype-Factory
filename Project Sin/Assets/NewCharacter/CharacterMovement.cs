@@ -194,7 +194,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void RegularMovement(Vector2 InputVec)
     {
-
+        
         Vector3 Vec = Vector3.zero + Physics.gravity * Time.deltaTime;
         Vec += transform.rotation * Vector3.right * InputVec.x;
         Vec += transform.rotation * Vector3.forward * InputVec.y;
@@ -220,6 +220,8 @@ public class CharacterMovement : MonoBehaviour
         }
         else
         {
+            if(RB.velocity.magnitude > (CurrentTopSpeed / 3.6f)*0.8f&&InputVec==Vector2.up)
+            RB.velocity = transform.rotation * Vector3.forward * RB.velocity.magnitude;
             IsDecellerating = false;
             SlowCurrentSpeed = 0.01f;
         }
